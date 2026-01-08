@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aplikasi Jurnal Guru Digital</title>
-    <!-- Script Library PDF Otomatis -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Library untuk PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- CSS VARIABLES & RESET --- */
         :root {
@@ -21,7 +22,7 @@
             --danger: #ef4444;
             --success: #22c55e;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --filter-yellow: #fef08a; /* Warna Kuning untuk Filter */
+            --filter-yellow: #fef08a;
             --filter-text: #854d0e;
         }
 
@@ -38,7 +39,7 @@
             color: #1e293b;
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Prevent scroll on body, use internal scroll */
+            overflow: hidden;
             display: flex;
         }
 
@@ -60,6 +61,9 @@
             font-weight: bold;
             color: var(--white);
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .nav-links { list-style: none; padding: 20px 10px; flex: 1; }
@@ -115,7 +119,7 @@
 
         .content-area {
             flex: 1;
-            overflow-y: auto; /* Scrollable content */
+            overflow-y: auto;
             padding: 20px;
         }
 
@@ -145,17 +149,22 @@
             gap: 10px;
         }
 
-        /* --- STYLING KHUSUS FILTER (KOTAK KUNING) --- */
-        .filter-group { display: flex; align-items: center; gap: 10px; width: 100%; }
+        /* --- STYLING FILTER & TOMBOL --- */
+        .filter-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
         
         .yellow-select {
             background-color: var(--filter-yellow) !important;
-            border-color: #facc15 !important;
+            border: 1px solid #eab308 !important;
             color: var(--filter-text) !important;
             font-weight: 600;
             padding: 8px 12px !important;
             outline: none;
-            box-shadow: 0 2px 4px rgba(234, 179, 8, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         /* --- FORMS & BUTTONS --- */
@@ -171,7 +180,7 @@
         }
         
         .btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
@@ -182,12 +191,13 @@
             font-size: 0.9rem;
             justify-content: center;
             text-decoration: none;
+            transition: background 0.2s;
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-outline { border: 1px solid var(--border); background: white; color: #475569; }
         .btn-pdf { background: #dc2626; color: white; }
+        .btn-pdf:hover { background: #b91c1c; }
         
         .backup-area {
             display: flex;
@@ -207,20 +217,46 @@
         th { background-color: #f8fafc; font-weight: 600; color: #64748b; white-space: nowrap; }
         tr:hover { background-color: #f1f5f9; }
 
+        /* --- SIGNATURE SECTION (TANDA TANGAN) --- */
+        .signature-section {
+            margin-top: 50px;
+            padding: 0 20px;
+            display: none; /* Disembunyikan di layar HP/Desktop biasa */
+            justify-content: space-between;
+            font-size: 1rem;
+            color: #000;
+        }
+        .sig-block {
+            text-align: center;
+            min-width: 200px;
+        }
+        .sig-space {
+            height: 80px;
+        }
+
         /* --- AUTO COMPLETE & TAGS --- */
         .search-container { position: relative; }
         .suggestions {
             position: absolute; top: 100%; left: 0; right: 0;
             background: white; border: 1px solid var(--border);
-            max-height: 250px; overflow-y: auto; z-index: 50;
+            max-height: 200px; overflow-y: auto; z-index: 50;
             box-shadow: var(--shadow);
+            border-radius: 0 0 6px 6px;
         }
         .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; }
         .suggestion-item:hover { background: #f1f5f9; }
         
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .tag { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .tag-remove { cursor: pointer; background: #0ea5e9; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .tag { 
+            background: #e0f2fe; color: #0369a1; padding: 4px 10px; 
+            border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
+            display: flex; align-items: center; gap: 6px; 
+        }
+        .tag-remove { 
+            cursor: pointer; background: #0ea5e9; color: white; 
+            border-radius: 50%; width: 16px; height: 16px; 
+            display: flex; align-items: center; justify-content: center; font-size: 10px; 
+        }
 
         /* --- TOAST --- */
         #toast {
@@ -231,26 +267,43 @@
         }
         #toast.show { opacity: 1; }
 
-        /* --- PRINT STYLES (Sekadar fallback) --- */
+        /* --- PDF LOADING OVERLAY --- */
+        .pdf-loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); color: white;
+            z-index: 9999; display: none;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- PRINT STYLES --- */
+        .print-header { display: none; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333; }
+        .print-header h2 { font-size: 18pt; text-transform: uppercase; margin: 0; }
+        .print-header p { font-size: 11pt; margin: 3px 0; }
+
         @media print {
-            .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, .filter-group, .no-print, .menu-toggle, .overlay, .backup-area, .form-group {
+            .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, .filter-group, .menu-toggle, .no-print {
                 display: none !important;
             }
-            body, .main-content, .content-area { height: auto; overflow: visible; background: white; display: block; position: static; width: 100%; }
-            .card { box-shadow: none; border: none; padding: 0; margin-bottom: 30px; }
-            .table-responsive { border: none; overflow: visible; }
-            table { width: 100%; font-size: 11pt; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #000; padding: 8px; color: #000; }
-            th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-            .print-header h2 { margin-bottom: 5px; font-size: 16pt; font-weight: bold; text-transform: uppercase; }
-            .print-header p { font-size: 11pt; margin: 0; }
-            .section { display: none !important; }
-            .section.active { display: block !important; }
+            body, .main-content, .content-area, .card {
+                background: white; width: 100%; height: auto; overflow: visible; padding: 0; margin: 0; box-shadow: none; border: none;
+            }
+            .print-header { display: block !important; }
+            .signature-section { display: flex !important; page-break-inside: avoid; } /* Tampilkan Tanda Tangan saat Print */
+            table { width: 100%; border: 1px solid #000; }
+            th, td { border: 1px solid #000; color: #000; padding: 8px; }
         }
-        .print-header { display: none; } /* Hidden on screen */
 
-        /* --- MOBILE --- */
+        /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; }
             .sidebar.open { transform: translateX(260px); }
@@ -261,10 +314,10 @@
             }
             .overlay.active { display: block; }
             
-            .card-header { flex-direction: column; align-items: stretch; }
-            .filter-group { flex-direction: column !important; align-items: stretch !important; gap: 10px; width: 100%; }
-            .yellow-select { width: 100%; order: 1; flex: none; }
-            .btn-pdf, .btn-danger { width: 100%; order: 2; margin: 0 !important; padding: 12px !important; display: flex !important; }
+            .card-header { flex-direction: column; align-items: flex-start; }
+            .filter-group { flex-direction: column; align-items: stretch; width: 100%; margin-top: 10px; }
+            .yellow-select { width: 100%; margin-bottom: 5px; }
+            .btn { width: 100%; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -301,7 +354,9 @@
                 <div class="card">
                     <div class="card-header">Identitas Sekolah & Guru</div>
                     <form id="profileForm">
-                        <div class="form-group"><label>Nama Sekolah</label><input type="text" id="schoolName" placeholder="" required></div>
+                        <div class="form-group"><label>Nama Sekolah</label><input type="text" id="schoolName" placeholder="SMK Negeri..." required></div>
+                        <!-- Input Kota Ditambahkan -->
+                        <div class="form-group"><label>Kota / Kabupaten (Untuk Tgl Laporan)</label><input type="text" id="schoolCity" placeholder="Contoh: Surabaya" required></div>
                         <div class="form-group"><label>Nama Guru</label><input type="text" id="teacherName" placeholder="Nama Bapak/Ibu Guru" required></div>
                         <div class="form-group"><label>Mata Pelajaran</label><input type="text" id="subject" placeholder="Contoh: Matematika" required></div>
                         <div class="form-group"><label>Nama Kepala Sekolah</label><input type="text" id="principalName" placeholder="Nama Kepala Sekolah" required></div>
@@ -325,7 +380,7 @@
                                 <div id="suggestions" class="suggestions" style="display:none;"></div>
                             </div>
                             <div id="selectedTags" class="tags-container"></div>
-                            <small style="color: #64748b; font-size: 0.8rem; margin-top: 5px;">Pilih siswa di daftar untuk menambahkan. Kursor akan tetap aktif setelah memilih.</small>
+                            <small style="color: #64748b; font-size: 0.8rem; margin-top: 5px;">*Ketuk nama siswa untuk menambahkan ke daftar absen.</small>
                         </div>
                         <div style="margin-top: 20px;"><button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Jurnal</button></div>
                     </form>
@@ -334,85 +389,126 @@
 
             <!-- SECTION 3: CETAK JURNAL -->
             <section id="cetak-jurnal" class="section">
-                <div class="print-header">
-                    <h2 id="printSchoolName">Nama Sekolah</h2>
-                    <p>Guru: <span id="printTeacherName">-</span> | Mapel: <span id="printSubject">-</span></p>
-                    <p style="margin-top: 5px; font-weight: bold;">LAPORAN JURNAL MENGAJAR</p>
-                </div>
-
-                <!-- Card ini yang akan dijadikan PDF -->
-                <div class="card" id="journal-pdf-area">
-                    <div class="card-header">
-                        <span style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;">Atur Tampilan:</span>
-                        <div class="filter-group no-print">
-                            <select id="printClassFilter" class="yellow-select" onchange="renderHistoryTable()">
-                                <option value="ALL">🏫 Semua Kelas</option>
-                                <option value="X">📘 Kelas X</option>
-                                <option value="XI">📗 Kelas XI</option>
-                                <option value="XII">📕 Kelas XII</option>
-                            </select>
-                            <!-- Tombol PDF Sekarang memanggil fungsi downloadPDF -->
-                            <button class="btn btn-pdf no-print" onclick="downloadJournalPDF()">📄 Simpan ke PDF</button>
-                        </div>
+                <!-- Wrapper untuk PDF Capture -->
+                <div id="capture-jurnal">
+                    <div class="print-header">
+                        <h2 id="printSchoolName">Nama Sekolah</h2>
+                        <p>Guru: <span id="printTeacherName">-</span> | Mapel: <span id="printSubject">-</span></p>
+                        <p style="margin-top: 5px; font-weight: bold; text-decoration: underline;">LAPORAN JURNAL MENGAJAR</p>
                     </div>
 
-                    <div class="table-responsive">
-                        <table id="historyTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 15%;">Tanggal</th>
-                                    <th style="width: 10%;">Kelas</th>
-                                    <th>Materi / Kegiatan</th>
-                                    <th style="width: 25%;">Keterangan Absensi</th>
-                                    <th class="no-print" style="width: 80px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <div id="historyEmpty" style="padding: 20px; text-align: center; color: #64748b;">Belum ada data jurnal.</div>
+                    <div class="card" style="border: none; box-shadow: none;">
+                        <div class="card-header no-print-pdf" style="border-bottom: none;">
+                            <span>Riwayat Jurnal</span>
+                            <!-- Class no-print ditambahkan di sini agar hilang saat PDF -->
+                            <div class="filter-group no-print">
+                                <select id="printClassFilter" class="yellow-select" onchange="renderHistoryTable()">
+                                    <option value="ALL">🏫 Semua Kelas</option>
+                                    <option value="X">📘 Kelas X</option>
+                                    <option value="XI">📗 Kelas XI</option>
+                                    <option value="XII">📕 Kelas XII</option>
+                                </select>
+                                <button class="btn btn-pdf" onclick="generatePDF('jurnal')">📄 Download PDF</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%;">Tanggal</th>
+                                        <th style="width: 10%;">Kelas</th>
+                                        <th>Materi / Kegiatan</th>
+                                        <th style="width: 25%;">Absensi</th>
+                                        <!-- Header Aksi juga akan dihilangkan -->
+                                        <th class="no-print" style="width: 70px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div id="historyEmpty" style="padding: 20px; text-align: center; color: #64748b;">Belum ada data jurnal.</div>
+                        </div>
+
+                        <!-- BAGIAN TANDA TANGAN (Hidden by default, shown on PDF) -->
+                        <div class="signature-section no-screen">
+                            <div class="sig-block">
+                                <p>Mengetahui,</p>
+                                <p>Kepala Sekolah</p>
+                                <div class="sig-space"></div>
+                                <p><b id="sigPrincipal1">Nama Kepala Sekolah</b></p>
+                                <p>NIP. .......................</p>
+                            </div>
+                            <div class="sig-block">
+                                <p id="sigDate1">Kota, Tanggal</p>
+                                <p>Guru Mata Pelajaran</p>
+                                <div class="sig-space"></div>
+                                <p><b id="sigTeacher1">Nama Guru</b></p>
+                                <p>NIP. .......................</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- SECTION 4: REKAP ABSEN -->
             <section id="rekap-absen" class="section">
-                <div class="print-header">
-                    <h2 id="rekapPrintTitle">Rekapitulasi Kehadiran Siswa</h2>
-                    <p>Nama Sekolah: <span id="rekapSchoolName"></span></p>
-                    <p>Tahun Ajaran: <span id="rekapYear"></span></p>
-                </div>
-
-                <!-- Card ini yang akan dijadikan PDF -->
-                <div class="card" id="recap-pdf-area">
-                    <div class="card-header">
-                        <span style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;">Atur Tampilan:</span>
-                        <div class="filter-group no-print">
-                            <select id="recapClassFilter" class="yellow-select" onchange="renderRecapTable()">
-                                <option value="ALL">🏫 Semua Kelas</option>
-                                <option value="X">📘 Kelas X</option>
-                                <option value="XI">📗 Kelas XI</option>
-                                <option value="XII">📕 Kelas XII</option>
-                            </select>
-                            <!-- Tombol PDF Sekarang memanggil fungsi downloadRecapPDF -->
-                            <button class="btn btn-pdf no-print" onclick="downloadRecapPDF()">📄 Simpan ke PDF</button>
-                        </div>
+                <!-- Wrapper untuk PDF Capture -->
+                <div id="capture-rekap">
+                    <div class="print-header">
+                        <h2 id="rekapSchoolNameHeader">Nama Sekolah</h2>
+                        <h3 style="font-size: 14pt; margin: 5px 0;">REKAPITULASI KEHADIRAN SISWA</h3>
+                        <p>Tahun: <span id="rekapYear"></span></p>
                     </div>
 
-                    <div class="table-responsive">
-                        <table id="recapTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px;">No</th>
-                                    <th>Nama Siswa</th>
-                                    <th>Kelas</th>
-                                    <th style="width: 100px; text-align: center;">Jml Absen</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recapBody">
-                                <!-- Data Rekap -->
-                            </tbody>
-                        </table>
-                        <div id="recapEmpty" style="padding: 20px; text-align: center; color: #64748b;">Tidak ada data siswa yang absen.</div>
+                    <div class="card" style="border: none; box-shadow: none;">
+                        <div class="card-header no-print-pdf" style="border-bottom: none;">
+                            <span>Rekapitulasi</span>
+                            <!-- Class no-print ditambahkan di sini -->
+                            <div class="filter-group no-print">
+                                <select id="recapClassFilter" class="yellow-select" onchange="renderRecapTable()">
+                                    <option value="ALL">🏫 Semua Kelas</option>
+                                    <option value="X">📘 Kelas X</option>
+                                    <option value="XI">📗 Kelas XI</option>
+                                    <option value="XII">📕 Kelas XII</option>
+                                </select>
+                                <button class="btn btn-pdf" onclick="generatePDF('rekap')">📄 Download PDF</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="recapTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">No</th>
+                                        <th>Nama Siswa</th>
+                                        <th>Kelas</th>
+                                        <th style="width: 100px; text-align: center;">Jml Absen</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recapBody">
+                                    <!-- Data Rekap -->
+                                </tbody>
+                            </table>
+                            <div id="recapEmpty" style="padding: 20px; text-align: center; color: #64748b;">Tidak ada data siswa yang absen.</div>
+                        </div>
+
+                        <!-- BAGIAN TANDA TANGAN (Hidden by default, shown on PDF) -->
+                        <div class="signature-section no-screen">
+                            <div class="sig-block">
+                                <p>Mengetahui,</p>
+                                <p>Kepala Sekolah</p>
+                                <div class="sig-space"></div>
+                                <p><b id="sigPrincipal2">Nama Kepala Sekolah</b></p>
+                                <p>NIP. .......................</p>
+                            </div>
+                            <div class="sig-block">
+                                <p id="sigDate2">Kota, Tanggal</p>
+                                <p>Guru Mata Pelajaran</p>
+                                <div class="sig-space"></div>
+                                <p><b id="sigTeacher2">Nama Guru</b></p>
+                                <p>NIP. .......................</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -420,19 +516,19 @@
             <!-- SECTION 5: BACKUP & RESTORE -->
             <section id="backup-restore" class="section">
                 <div class="card">
-                    <div class="card-header">Backup & Restore Data (JSON)</div>
+                    <div class="card-header">Backup & Restore Data</div>
                     <div class="backup-area">
                         <div>
                             <h3>💾 Backup Data</h3>
-                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Download semua data jurnal dan profil ke file JSON.</p>
-                            <button class="btn btn-primary" onclick="exportBackup()">Download File Backup</button>
+                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Download data jurnal ke file .json</p>
+                            <button class="btn btn-primary" onclick="exportBackup()">Download Backup</button>
                         </div>
                         <hr style="border: 0; border-top: 1px solid #ddd;">
                         <div>
                             <h3>📂 Restore Data</h3>
-                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Upload file backup untuk memulihkan data (Data lama akan ditimpa).</p>
+                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Upload file .json untuk mengembalikan data</p>
                             <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importBackup(this)">
-                            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">Pilih File Backup</button>
+                            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">Pilih File</button>
                         </div>
                     </div>
                 </div>
@@ -441,108 +537,113 @@
         </div>
     </main>
 
-    <!-- TOAST -->
+    <!-- TOAST & LOADING -->
     <div id="toast">Pesan</div>
+    <div id="pdfLoading" class="pdf-loading">
+        <div class="spinner"></div>
+        <div style="font-weight: bold;">Sedang Membuat PDF...</div>
+        <small>Mohon tunggu sebentar</small>
+    </div>
 
     <script>
         // --- DATA SISWA ---
         let students = [
-            { nis: '0094789075', nama: 'ADI SAPUTRA', kelas: 'X (Sepuluh)', ortu: 'Slamet Wahyudi', photo: '' },
-            { nis: '0096019190', nama: 'AULIA NUR LAELA', kelas: 'X (Sepuluh)', ortu: 'Narjo', photo: '' },
-            { nis: '0107301719', nama: 'CIPA NADIA SALMA', kelas: 'X (Sepuluh)', ortu: 'Samsuri', photo: '' },
-            { nis: '0088133836', nama: 'DEDI IRAWAN', kelas: 'X (Sepuluh)', ortu: 'Dwi junianto', photo: '' },
-            { nis: '0097790486', nama: 'FAREL SAPUTERA', kelas: 'X (Sepuluh)', ortu: 'Wasidi', photo: '' },
-            { nis: '0106097706', nama: 'ISMAWATI DWI ANGGRAINI', kelas: 'X (Sepuluh)', ortu: 'Taukhit', photo: '' },
-            { nis: '0085852231', nama: 'IRFAN', kelas: 'X (Sepuluh)', ortu: 'SUKRI', photo: '' },
-            { nis: '0092200897', nama: 'LUTHFI HAKIM', kelas: 'X (Sepuluh)', ortu: 'SUPARMAN', photo: '' },
-            { nis: '0109081925', nama: 'M.ADITYA PRAYOGA', kelas: 'X (Sepuluh)', ortu: 'M.Marzuki', photo: '' },
-            { nis: '0094433103', nama: 'M.AL IMRON', kelas: 'X (Sepuluh)', ortu: 'Imam Subari', photo: '' },
-            { nis: '0097848607', nama: 'MOHAMAT HARIS SETIAWAN', kelas: 'X (Sepuluh)', ortu: 'TRIYONO', photo: '' },
-            { nis: '0082735425', nama: 'MOHAMAD RIKI SAPUTRA', kelas: 'X (Sepuluh)', ortu: 'PONIDI', photo: '' },
-            { nis: '0102522253', nama: 'RADITYA DANU PRATAMA', kelas: 'X (Sepuluh)', ortu: 'Gatot Suherman', photo: '' },
-            { nis: '0102235604', nama: 'RIDHO FIRMANSYAH', kelas: 'X (Sepuluh)', ortu: 'SUNTORO', photo: '' },
-            { nis: '0099798429', nama: 'RIZKI CAHYO SUGENG WIBOWO', kelas: 'X (Sepuluh)', ortu: 'MISIYO', photo: '' },
-            { nis: '0000000316', nama: 'RIZAL ABDUL HAQ', kelas: 'X (Sepuluh)', ortu: 'Suhirno', photo: '' },
-            { nis: '0106667835', nama: 'SAFA AULIA PUTRI', kelas: 'X (Sepuluh)', ortu: 'Jumidi', photo: '' },
-            { nis: '0105199297', nama: 'SHINTA SASTYA WATI', kelas: 'X (Sepuluh)', ortu: 'Ah.Suyani', photo: '' },
-            { nis: '3106050813', nama: 'TIYAS FARIDA SARI', kelas: 'X (Sepuluh)', ortu: 'Ah. Mutaqin', photo: '' },
-            { nis: '0095977397', nama: 'FAIS DAROIN', kelas: 'X (Sepuluh)', ortu: '', photo: '' },
-            { nis: '0095046784', nama: 'YULIA MUSLIMATUS SADIYAH', kelas: 'X (Sepuluh)', ortu: '', photo: '' },
-            { nis: '0084903816', nama: 'Ahmad Iqbal', kelas: 'XI (Sebelas)', ortu: 'Paimin', photo: '' },
-            { nis: '0088606301', nama: 'Ahmad Ramadhani', kelas: 'XI (Sebelas)', ortu: 'Slamet Wahyudi', photo: '' },
-            { nis: '1000000001', nama: 'Argi Setiawan', kelas: 'XI (Sebelas)', ortu: 'Sukirno', photo: '' },
-            { nis: '0081098360', nama: 'Aisyah Lu\'lu\'ul Husna', kelas: 'XI (Sebelas)', ortu: 'Maryono', photo: '' },
-            { nis: '0095627591', nama: 'Anggun Puspita Anggraini', kelas: 'XI (Sebelas)', ortu: 'Sariyono', photo: '' },
-            { nis: '0089314202', nama: 'Dafa', kelas: 'XI (Sebelas)', ortu: 'Sudarmaji', photo: '' },
-            { nis: '0091007309', nama: 'Devita Anjani', kelas: 'XI (Sebelas)', ortu: 'Budi Wahyono', photo: '' },
-            { nis: '2000000002', nama: 'Ferdi Kurniawan', kelas: 'XI (Sebelas)', ortu: 'Mukani', photo: '' },
-            { nis: '3000000003', nama: 'Fitra Afriza', kelas: 'XI (Sebelas)', ortu: 'Wasito', photo: '' },
-            { nis: '0084423897', nama: 'Indah Kasturi Kusuma Putri', kelas: 'XI (Sebelas)', ortu: 'Ahmad Sabidin', photo: '' },
-            { nis: '0098669866', nama: 'Lefiyana Juwita', kelas: 'XI (Sebelas)', ortu: 'Ponirin', photo: '' },
-            { nis: '0085606025', nama: 'Marchfel Firdiyansah', kelas: 'XI (Sebelas)', ortu: 'Supriyadi', photo: '' },
-            { nis: '0089725108', nama: 'Melinda Kusuma Dewi', kelas: 'XI (Sebelas)', ortu: 'Zaenuddin', photo: '' },
-            { nis: '0092585298', nama: 'M.Yudha Rizki Iftori', kelas: 'XI (Sebelas)', ortu: 'Candra Gunawan', photo: '' },
-            { nis: '0074048074', nama: 'Mohamad Ibnu Rosid', kelas: 'XI (Sebelas)', ortu: 'Parman', photo: ''},
-            { nis: '0083168310', nama: 'M.Bisma Mega Nanda', kelas: 'XI (Sebelas)', ortu: 'Suratman', photo: '' },
-            { nis: '0095212808', nama: 'M.Rizki Ramadhani', kelas: 'XI (Sebelas)', ortu: 'Syamsuri', photo: '' },
-            { nis: '0000000004', nama: 'M.Fiki Darmawan', kelas: 'XI (Sebelas)', ortu: 'Basar', photo: '' },
-            { nis: '3095650322', nama: 'M.Badru Muwafaq', kelas: 'XI (Sebelas)', ortu: 'M.Idris', photo: '' },
-            { nis: '0095475420', nama: 'Rima', kelas: 'XI (Sebelas)', ortu: 'Basuki', photo: '' },
-            { nis: '0095395423', nama: 'Rima Ulvania', kelas: 'XI (Sebelas)', ortu: 'Ahmad Darmadi', photo: '' },
-            { nis: '0091673355', nama: 'Riski Munandar', kelas: 'XI (Sebelas)', ortu: 'Sehono', photo: '' },
-            { nis: '0064036686', nama: 'Siti Miftakhul Makmuroh', kelas: 'XI (Sebelas)', ortu: 'Nur Ngali', photo: '' },
-            { nis: '0091403540', nama: 'Tomi Jadmiko', kelas: 'XI (Sebelas)', ortu: 'Tentrem Sutejo', photo: '' },
-            { nis: '0086855084', nama: 'Tia Dwi Saputri', kelas: 'XI (Sebelas)', ortu: 'Sudarno', photo: '' },
-            { nis: '0000000005', nama: 'Wafiq Khariri', kelas: 'XI (Sebelas)', ortu: 'M.Sholikin', photo: '' },
-            { nis: '0095475420', nama: 'Yeni Winarni', kelas: 'XI (Sebelas)', ortu: 'Hermawan', photo: '' },
-            { nis: '0000000006', nama: 'Ainun Nadhiroh', kelas: 'XI (Sebelas)', ortu: 'Ahmad Sukirno', photo: '' },
-            { nis: '0098781514', nama: 'Habibatus Zakia', kelas: 'XI (Sebelas)', ortu: 'Mastur Supriyanto', photo: '' },
-            { nis: '3096763981', nama: 'Dwi Fatimah', kelas: 'XI (Sebelas)', ortu: 'Sugiarto', photo: '' },
-            { nis: '3085136071', nama: 'M.Akbar Panjalu', kelas: 'XI (Sebelas)', ortu: 'Imam Mashuri', photo: '' },
-            { nis: '0000000007', nama: 'Angga Dwi Saputra', kelas: 'XI (Sebelas)', ortu: 'Muhlasin', photo: '' },
-            { nis: '0077667204', nama: 'Ahmad Maulana', kelas: 'XII (dua Belas)', ortu: 'Wagiman', photo: '' },
-            { nis: '0085214724', nama: 'Aliya Ayu Marlina', kelas: 'XII (dua Belas)', ortu: 'Kasiman', photo: '' },
-            { nis: '0087149069', nama: 'Aprilia Winanti', kelas: 'XII (dua Belas)', ortu: 'Winarno', photo: '' },
-            { nis: '0082699089', nama: 'Bagas Setiawan', kelas: 'XII (dua Belas)', ortu: 'Supriyatin', photo: '' },
-            { nis: '0068818482', nama: 'Bagus Akbar Rani', kelas: 'XII (dua Belas)', ortu: 'Surani', photo: '' },
-            { nis: '0088041522', nama: 'Binti Lutfiyah Zakiyah', kelas: 'XII (dua Belas)', ortu: 'Suratmin', photo: '' },
-            { nis: '0087100213', nama: 'Cantika Dwi Jayanti', kelas: 'XII (dua Belas)', ortu: 'Pramono Ahmad Zaini', photo: '' },
-            { nis: '0073724648', nama: 'Dennis Prasetiyo', kelas: 'XII (dua Belas)', ortu: 'Mustaji Untoro', photo: '' },
-            { nis: '0073965350', nama: 'Disky Ramadani', kelas: 'XII (dua Belas)', ortu: 'M.Zahidin', photo: '' },
-            { nis: '0072676706', nama: 'Ega Saputra', kelas: 'XII (dua Belas)', ortu: 'Sugiyono', photo: '' },
-            { nis: '0085103057', nama: 'Eka Putri Febriani', kelas: 'XII (dua Belas)', ortu: 'Jamroji', photo: '' },
-            { nis: '0083708627', nama: 'Endra Saputra', kelas: 'XII (dua Belas)', ortu: 'Darwanto', photo: '' },
-            { nis: '0081159769', nama: 'Farid Ahmad Faisal', kelas: 'XII (dua Belas)', ortu: 'Sutarmin', photo: '' },
-            { nis: '0084757704', nama: 'Maulana Dava', kelas: 'XII (dua Belas)', ortu: 'Muh Makruf', photo: '' },
-            { nis: '0000000008', nama: 'Maya Safitri', kelas: 'XII (dua Belas)', ortu: 'Paiman', photo: '' },
-            { nis: '0077167251', nama: 'Miranti', kelas: 'XII (dua Belas)', ortu: 'Sunardi', photo: '' },
-            { nis: '0072775329', nama: 'Muhammad Aldino Ama Rasya', kelas: 'XII (dua Belas)', ortu: 'Tarmidi', photo: '' },
-            { nis: '0082727230', nama: 'Muhammad Ahya', kelas: 'XII (dua Belas)', ortu: 'Nurwadi', photo: '' },
-            { nis: '0081846871', nama: 'Mohamad Dendi Firmanto', kelas: 'XII (dua Belas)', ortu: 'Sumarni', photo: '' },
-            { nis: '0084244287', nama: 'Muhamad Misbahul Munir', kelas: 'XII (dua Belas)', ortu: 'M.Darmo', photo: '' },
-            { nis: '0089726548', nama: 'Muhammad Rejaki', kelas: 'XII (dua Belas)', ortu: 'Ahmad Ribud', photo: '' },
-            { nis: '0077347477', nama: 'Mohammad Sulton Al-azhar', kelas: 'XII (dua Belas)', ortu: 'Sayudi', photo: '' },
-            { nis: '0085214724', nama: 'Nanda Ayu Ningsih', kelas: 'XII (dua Belas)', ortu: 'Kusnan', photo: '' },
-            { nis: '0000000012', nama: 'Nayla Amin', kelas: 'XII (dua Belas)', ortu: 'Sumarni', photo: '' },
-            { nis: '0071174694', nama: 'Rahma Wulandari', kelas: 'XII (dua Belas)', ortu: 'Maryono', photo: '' },
-            { nis: '0084479963', nama: 'Rendi Hidayat', kelas: 'XII (dua Belas)', ortu: 'Yarkoni', photo: '' },
-            { nis: '0088343077', nama: 'Sahal Wahyudin', kelas: 'XII (dua Belas)', ortu: 'Suhadak', photo: '' },
-            { nis: '0000000009', nama: 'Shera Aurelia Sariana', kelas: 'XII (dua Belas)', ortu: 'Muhamat Nurkholiq', photo: '' },
-            { nis: '0070226573', nama: 'Sulamanul Jamal', kelas: 'XII (dua Belas)', ortu: 'Untung Chasbulloh', photo: '' },
-            { nis: '0075282696', nama: 'Tiara Saputri', kelas: 'XII (dua Belas)', ortu: 'Samukri', photo: '' },
-            { nis: '0084034253', nama: 'Wahyuni Naila Ngilma', kelas: 'XII (dua Belas)', ortu: 'Sarengat', photo: '' },
-            { nis: '0087602782', nama: 'Laura Meliyana Dewi', kelas: 'XII (dua Belas)', ortu: 'Muhamat Asngadi', photo: '' },
-            { nis: '0000000010', nama: 'EKO NUZULUL MISBAH', kelas: 'XII (dua Belas)', ortu: '', photo: '' },
-            { nis: '0000000011', nama: 'MUHAMAD KHOIRUR ROZIKIN', kelas: 'XII (dua Belas)', ortu: '', photo: '' },
+            { nis: '0094789075', nama: 'ADI SAPUTRA', kelas: 'X (Sepuluh)' },
+            { nis: '0096019190', nama: 'AULIA NUR LAELA', kelas: 'X (Sepuluh)' },
+            { nis: '0107301719', nama: 'CIPA NADIA SALMA', kelas: 'X (Sepuluh)' },
+            { nis: '0088133836', nama: 'DEDI IRAWAN', kelas: 'X (Sepuluh)' },
+            { nis: '0097790486', nama: 'FAREL SAPUTERA', kelas: 'X (Sepuluh)' },
+            { nis: '0106097706', nama: 'ISMAWATI DWI ANGGRAINI', kelas: 'X (Sepuluh)' },
+            { nis: '0085852231', nama: 'IRFAN', kelas: 'X (Sepuluh)' },
+            { nis: '0092200897', nama: 'LUTHFI HAKIM', kelas: 'X (Sepuluh)' },
+            { nis: '0109081925', nama: 'M.ADITYA PRAYOGA', kelas: 'X (Sepuluh)' },
+            { nis: '0094433103', nama: 'M.AL IMRON', kelas: 'X (Sepuluh)' },
+            { nis: '0097848607', nama: 'MOHAMAT HARIS SETIAWAN', kelas: 'X (Sepuluh)' },
+            { nis: '0082735425', nama: 'MOHAMAD RIKI SAPUTRA', kelas: 'X (Sepuluh)' },
+            { nis: '0102522253', nama: 'RADITYA DANU PRATAMA', kelas: 'X (Sepuluh)' },
+            { nis: '0102235604', nama: 'RIDHO FIRMANSYAH', kelas: 'X (Sepuluh)' },
+            { nis: '0099798429', nama: 'RIZKI CAHYO SUGENG WIBOWO', kelas: 'X (Sepuluh)' },
+            { nis: '0000000316', nama: 'RIZAL ABDUL HAQ', kelas: 'X (Sepuluh)' },
+            { nis: '0106667835', nama: 'SAFA AULIA PUTRI', kelas: 'X (Sepuluh)' },
+            { nis: '0105199297', nama: 'SHINTA SASTYA WATI', kelas: 'X (Sepuluh)' },
+            { nis: '3106050813', nama: 'TIYAS FARIDA SARI', kelas: 'X (Sepuluh)' },
+            { nis: '0095977397', nama: 'FAIS DAROIN', kelas: 'X (Sepuluh)' },
+            { nis: '0095046784', nama: 'YULIA MUSLIMATUS SADIYAH', kelas: 'X (Sepuluh)' },
+            { nis: '0084903816', nama: 'Ahmad Iqbal', kelas: 'XI (Sebelas)' },
+            { nis: '0088606301', nama: 'Ahmad Ramadhani', kelas: 'XI (Sebelas)' },
+            { nis: '1000000001', nama: 'Argi Setiawan', kelas: 'XI (Sebelas)' },
+            { nis: '0081098360', nama: 'Aisyah Lu\'lu\'ul Husna', kelas: 'XI (Sebelas)' },
+            { nis: '0095627591', nama: 'Anggun Puspita Anggraini', kelas: 'XI (Sebelas)' },
+            { nis: '0089314202', nama: 'Dafa', kelas: 'XI (Sebelas)' },
+            { nis: '0091007309', nama: 'Devita Anjani', kelas: 'XI (Sebelas)' },
+            { nis: '2000000002', nama: 'Ferdi Kurniawan', kelas: 'XI (Sebelas)' },
+            { nis: '3000000003', nama: 'Fitra Afriza', kelas: 'XI (Sebelas)' },
+            { nis: '0084423897', nama: 'Indah Kasturi Kusuma Putri', kelas: 'XI (Sebelas)' },
+            { nis: '0098669866', nama: 'Lefiyana Juwita', kelas: 'XI (Sebelas)' },
+            { nis: '0085606025', nama: 'Marchfel Firdiyansah', kelas: 'XI (Sebelas)' },
+            { nis: '0089725108', nama: 'Melinda Kusuma Dewi', kelas: 'XI (Sebelas)' },
+            { nis: '0092585298', nama: 'M.Yudha Rizki Iftori', kelas: 'XI (Sebelas)' },
+            { nis: '0074048074', nama: 'Mohamad Ibnu Rosid', kelas: 'XI (Sebelas)' },
+            { nis: '0083168310', nama: 'M.Bisma Mega Nanda', kelas: 'XI (Sebelas)' },
+            { nis: '0095212808', nama: 'M.Rizki Ramadhani', kelas: 'XI (Sebelas)' },
+            { nis: '0000000004', nama: 'M.Fiki Darmawan', kelas: 'XI (Sebelas)' },
+            { nis: '3095650322', nama: 'M.Badru Muwafaq', kelas: 'XI (Sebelas)' },
+            { nis: '0095475420', nama: 'Rima', kelas: 'XI (Sebelas)' },
+            { nis: '0095395423', nama: 'Rima Ulvania', kelas: 'XI (Sebelas)' },
+            { nis: '0091673355', nama: 'Riski Munandar', kelas: 'XI (Sebelas)' },
+            { nis: '0064036686', nama: 'Siti Miftakhul Makmuroh', kelas: 'XI (Sebelas)' },
+            { nis: '0091403540', nama: 'Tomi Jadmiko', kelas: 'XI (Sebelas)' },
+            { nis: '0086855084', nama: 'Tia Dwi Saputri', kelas: 'XI (Sebelas)' },
+            { nis: '0000000005', nama: 'Wafiq Khariri', kelas: 'XI (Sebelas)' },
+            { nis: '0095475420', nama: 'Yeni Winarni', kelas: 'XI (Sebelas)' },
+            { nis: '0000000006', nama: 'Ainun Nadhiroh', kelas: 'XI (Sebelas)' },
+            { nis: '0098781514', nama: 'Habibatus Zakia', kelas: 'XI (Sebelas)' },
+            { nis: '3096763981', nama: 'Dwi Fatimah', kelas: 'XI (Sebelas)' },
+            { nis: '3085136071', nama: 'M.Akbar Panjalu', kelas: 'XI (Sebelas)' },
+            { nis: '0000000007', nama: 'Angga Dwi Saputra', kelas: 'XI (Sebelas)' },
+            { nis: '0077667204', nama: 'Ahmad Maulana', kelas: 'XII (dua Belas)' },
+            { nis: '0085214724', nama: 'Aliya Ayu Marlina', kelas: 'XII (dua Belas)' },
+            { nis: '0087149069', nama: 'Aprilia Winanti', kelas: 'XII (dua Belas)' },
+            { nis: '0082699089', nama: 'Bagas Setiawan', kelas: 'XII (dua Belas)' },
+            { nis: '0068818482', nama: 'Bagus Akbar Rani', kelas: 'XII (dua Belas)' },
+            { nis: '0088041522', nama: 'Binti Lutfiyah Zakiyah', kelas: 'XII (dua Belas)' },
+            { nis: '0087100213', nama: 'Cantika Dwi Jayanti', kelas: 'XII (dua Belas)' },
+            { nis: '0073724648', nama: 'Dennis Prasetiyo', kelas: 'XII (dua Belas)' },
+            { nis: '0073965350', nama: 'Disky Ramadani', kelas: 'XII (dua Belas)' },
+            { nis: '0072676706', nama: 'Ega Saputra', kelas: 'XII (dua Belas)' },
+            { nis: '0085103057', nama: 'Eka Putri Febriani', kelas: 'XII (dua Belas)' },
+            { nis: '0083708627', nama: 'Endra Saputra', kelas: 'XII (dua Belas)' },
+            { nis: '0081159769', nama: 'Farid Ahmad Faisal', kelas: 'XII (dua Belas)' },
+            { nis: '0084757704', nama: 'Maulana Dava', kelas: 'XII (dua Belas)' },
+            { nis: '0000000008', nama: 'Maya Safitri', kelas: 'XII (dua Belas)' },
+            { nis: '0077167251', nama: 'Miranti', kelas: 'XII (dua Belas)' },
+            { nis: '0072775329', nama: 'Muhammad Aldino Ama Rasya', kelas: 'XII (dua Belas)' },
+            { nis: '0082727230', nama: 'Muhammad Ahya', kelas: 'XII (dua Belas)' },
+            { nis: '0081846871', nama: 'Mohamad Dendi Firmanto', kelas: 'XII (dua Belas)' },
+            { nis: '0084244287', nama: 'Muhamad Misbahul Munir', kelas: 'XII (dua Belas)' },
+            { nis: '0089726548', nama: 'Muhammad Rejaki', kelas: 'XII (dua Belas)' },
+            { nis: '0077347477', nama: 'Mohammad Sulton Al-azhar', kelas: 'XII (dua Belas)' },
+            { nis: '0085214724', nama: 'Nanda Ayu Ningsih', kelas: 'XII (dua Belas)' },
+            { nis: '0000000012', nama: 'Nayla Amin', kelas: 'XII (dua Belas)' },
+            { nis: '0071174694', nama: 'Rahma Wulandari', kelas: 'XII (dua Belas)' },
+            { nis: '0084479963', nama: 'Rendi Hidayat', kelas: 'XII (dua Belas)' },
+            { nis: '0088343077', nama: 'Sahal Wahyudin', kelas: 'XII (dua Belas)' },
+            { nis: '0000000009', nama: 'Shera Aurelia Sariana', kelas: 'XII (dua Belas)' },
+            { nis: '0070226573', nama: 'Sulamanul Jamal', kelas: 'XII (dua Belas)' },
+            { nis: '0075282696', nama: 'Tiara Saputri', kelas: 'XII (dua Belas)' },
+            { nis: '0084034253', nama: 'Wahyuni Naila Ngilma', kelas: 'XII (dua Belas)' },
+            { nis: '0087602782', nama: 'Laura Meliyana Dewi', kelas: 'XII (dua Belas)' },
+            { nis: '0000000010', nama: 'EKO NUZULUL MISBAH', kelas: 'XII (dua Belas)' },
+            { nis: '0000000011', nama: 'MUHAMAD KHOIRUR ROZIKIN', kelas: 'XII (dua Belas)' }
         ];
 
+        // Grouping Data
         let studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
         let selectedStudents = [];
         let journalHistory = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('journalDate').value = today;
+            document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', options);
@@ -553,6 +654,7 @@
             loadHistory();
         });
 
+        // Navigation
         function showSection(sectionId, navElement) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
@@ -564,7 +666,8 @@
 
             if(sectionId === 'cetak-jurnal') renderHistoryTable();
             if(sectionId === 'rekap-absen') {
-                document.getElementById('rekapSchoolName').textContent = document.getElementById('schoolName').value || '-';
+                const school = document.getElementById('schoolName').value || 'Nama Sekolah';
+                document.getElementById('rekapSchoolNameHeader').textContent = school;
                 renderRecapTable();
             }
         }
@@ -576,6 +679,7 @@
             overlay.classList.toggle('active');
         }
 
+        // --- LOGIC DATABASE SISWA ---
         function groupStudents() {
             students.forEach(s => {
                 let key = '';
@@ -588,9 +692,11 @@
             });
         }
 
+        // --- LOCAL STORAGE & PROFIL ---
         function saveToLocalStorage() {
             const profile = {
                 school: document.getElementById('schoolName').value,
+                city: document.getElementById('schoolCity').value,
                 teacher: document.getElementById('teacherName').value,
                 subject: document.getElementById('subject').value,
                 principal: document.getElementById('principalName').value
@@ -603,13 +709,23 @@
             const profile = JSON.parse(localStorage.getItem('teacherProfile'));
             if(profile) {
                 document.getElementById('schoolName').value = profile.school || '';
+                document.getElementById('schoolCity').value = profile.city || '';
                 document.getElementById('teacherName').value = profile.teacher || '';
                 document.getElementById('subject').value = profile.subject || '';
                 document.getElementById('principalName').value = profile.principal || '';
 
-                document.getElementById('printSchoolName').textContent = profile.school || 'Sekolah';
+                // Set Text untuk Print Header & Tanda Tangan
+                document.getElementById('printSchoolName').textContent = profile.school || 'Nama Sekolah';
                 document.getElementById('printTeacherName').textContent = profile.teacher || '-';
                 document.getElementById('printSubject').textContent = profile.subject || '-';
+                
+                // Isi Nama di Tanda Tangan
+                ['sigPrincipal1', 'sigPrincipal2'].forEach(id => {
+                    document.getElementById(id).textContent = profile.principal || 'Nama Kepala Sekolah';
+                });
+                ['sigTeacher1', 'sigTeacher2'].forEach(id => {
+                    document.getElementById(id).textContent = profile.teacher || 'Nama Guru';
+                });
             }
         }
 
@@ -625,6 +741,7 @@
             showToast("Profil Sekolah Disimpan!");
         });
 
+        // --- INPUT JURNAL ---
         function handleClassChange() {
             selectedStudents = [];
             renderTags();
@@ -657,7 +774,7 @@
                     div.innerHTML = `<span>${m.nama}</span> <small>${m.nis}</small>`;
                     div.onclick = () => {
                         addStudent(m.nama);
-                        document.getElementById('studentSearch').focus(); 
+                        document.getElementById('studentSearch').focus();
                     };
                     sugg.appendChild(div);
                 });
@@ -671,7 +788,6 @@
             renderTags();
             document.getElementById('studentSearch').value = '';
             document.getElementById('suggestions').style.display = 'none';
-            document.getElementById('studentSearch').focus(); 
         }
 
         function removeStudent(name) {
@@ -697,7 +813,8 @@
             };
             journalHistory.push(newEntry);
             saveToLocalStorage();
-            showToast("Jurnal Tersimpan!");
+            showToast("Jurnal Berhasil Disimpan!");
+            
             e.target.reset();
             document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             selectedStudents = [];
@@ -705,7 +822,7 @@
             handleClassChange();
         });
 
-        // --- CETAK JURNAL ---
+        // --- TABLE RENDER ---
         function renderHistoryTable() {
             const filterClass = document.getElementById('printClassFilter').value;
             const tbody = document.querySelector('#historyTable tbody');
@@ -724,9 +841,7 @@
             }
             empty.style.display = 'none';
 
-            const sorted = [...displayData].reverse();
-
-            sorted.forEach(j => {
+            [...displayData].reverse().forEach(j => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${formatDate(j.date)}</td>
@@ -741,28 +856,21 @@
             });
         }
 
-        // --- REKAP ABSEN ---
         function renderRecapTable() {
             const filterClass = document.getElementById('recapClassFilter').value;
             const tbody = document.getElementById('recapBody');
             const empty = document.getElementById('recapEmpty');
-            const title = document.getElementById('rekapPrintTitle');
             
             tbody.innerHTML = '';
-            
             let recapMap = {}; 
 
             journalHistory.forEach(j => {
                 if (filterClass !== 'ALL' && j.class !== filterClass) return;
-
                 j.absent.forEach(studentName => {
                     if (recapMap[studentName]) {
                         recapMap[studentName].count++;
                     } else {
-                        recapMap[studentName] = {
-                            count: 1,
-                            class: j.class
-                        };
+                        recapMap[studentName] = { count: 1, class: j.class };
                     }
                 });
             });
@@ -783,8 +891,6 @@
             }
             empty.style.display = 'none';
 
-            title.textContent = filterClass === 'ALL' ? "Rekapitulasi Absen (Semua Kelas)" : `Rekapitulasi Absen Kelas ${filterClass}`;
-
             recapArray.forEach((data, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -792,89 +898,118 @@
                     <td>${data.name}</td>
                     <td><strong>${data.class}</strong></td>
                     <td style="text-align: center;">
-                        ${data.count > 0 
-                            ? `<span class="tag" style="background:var(--danger); color:white;">${data.count}</span>` 
-                            : '0'}
+                        <span class="tag" style="background:var(--danger); color:white; justify-content:center;">${data.count}</span>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- FITUR PDF OTOMATIS (html2pdf) ---
+        // --- PDF GENERATION LOGIC ---
+        function generatePDF(type) {
+            const loading = document.getElementById('pdfLoading');
+            loading.style.display = 'flex';
 
-        function downloadJournalPDF() {
-            const element = document.getElementById('journal-pdf-area');
-            const controls = element.querySelector('.filter-group');
-            const date = new Date().toISOString().split('T')[0];
-            
-            showToast("Sedang membuat PDF...");
-            
-            // Sembunyikan tombol/filter sebelum dipotret
-            if(controls) controls.style.display = 'none';
+            setTimeout(() => {
+                let elementId, filename;
+                
+                // Update Tanggal Tanda Tangan Otomatis
+                const city = document.getElementById('schoolCity').value || 'Kota';
+                const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                const fullDate = `${city}, ${today}`;
+                
+                if (type === 'jurnal') {
+                    elementId = 'capture-jurnal';
+                    filename = 'Jurnal_Mengajar';
+                    document.getElementById('sigDate1').textContent = fullDate;
+                } else {
+                    elementId = 'capture-rekap';
+                    filename = 'Rekap_Absensi';
+                    document.getElementById('sigDate2').textContent = fullDate;
+                }
 
-            const opt = {
-              margin:       0.5,
-              filename:     `Laporan_Jurnal_${date}.pdf`,
-              image:        { type: 'jpeg', quality: 0.98 },
-              html2canvas:  { scale: 2 }, // Kualitas tinggi
-              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
+                const element = document.getElementById(elementId);
 
-            // Generate dan Download
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Kembalikan tampilan tombol
-                if(controls) controls.style.display = 'flex';
-                showToast("PDF berhasil didownload!");
-            });
-        }
+                html2canvas(element, {
+                    scale: 2,
+                    windowWidth: 1200, // FORCE DESKTOP VIEW
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    onclone: function(clonedDoc) {
+                        // Sembunyikan tombol & filter
+                        clonedDoc.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+                        clonedDoc.querySelectorAll('.no-print-pdf').forEach(el => el.style.borderBottom = 'none');
 
-        function downloadRecapPDF() {
-            const element = document.getElementById('recap-pdf-area');
-            const controls = element.querySelector('.filter-group');
-            const date = new Date().toISOString().split('T')[0];
-            
-            showToast("Sedang membuat PDF...");
+                        // Tampilkan Header & Tanda Tangan
+                        const printHeader = clonedDoc.querySelector('.print-header');
+                        if(printHeader) printHeader.style.display = 'block';
 
-            // Sembunyikan tombol/filter sebelum dipotret
-            if(controls) controls.style.display = 'none';
+                        // --- BAGIAN PENTING: MUNCULKAN TANDA TANGAN ---
+                        const sigSections = clonedDoc.querySelectorAll('.signature-section');
+                        sigSections.forEach(sig => sig.style.display = 'flex');
 
-            const opt = {
-              margin:       0.5,
-              filename:     `Rekap_Absen_${date}.pdf`,
-              image:        { type: 'jpeg', quality: 0.98 },
-              html2canvas:  { scale: 2 },
-              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
+                        // Fix Tabel Overflow
+                        const clonedElement = clonedDoc.getElementById(elementId);
+                        const tables = clonedElement.querySelectorAll('.table-responsive');
+                        tables.forEach(t => {
+                            t.style.overflow = 'visible';
+                            t.style.display = 'block';
+                            t.style.width = '100%';
+                        });
+                        clonedElement.style.width = '1100px'; 
+                        clonedElement.style.padding = '20px';
+                    }
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    const imgWidth = 210; 
+                    const pageHeight = 297; 
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    let heightLeft = imgHeight;
+                    let position = 0;
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                if(controls) controls.style.display = 'flex';
-                showToast("PDF berhasil didownload!");
-            });
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft > 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+
+                    pdf.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
+                    loading.style.display = 'none';
+                    showToast("PDF Berhasil Didownload");
+                }).catch(err => {
+                    console.error(err);
+                    loading.style.display = 'none';
+                    alert("Gagal membuat PDF. Silakan coba lagi.");
+                });
+            }, 500); 
         }
 
         // --- BACKUP & RESTORE ---
         function exportBackup() {
-            const profile = JSON.parse(localStorage.getItem('teacherProfile'));
             const dataToExport = {
-                profile: profile,
+                profile: JSON.parse(localStorage.getItem('teacherProfile')),
                 journals: journalHistory,
-                exportedAt: new Date().toISOString()
+                date: new Date().toISOString()
             };
-
             const dataStr = JSON.stringify(dataToExport, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = `jurnal_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `backup_jurnal_${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast("Backup berhasil didownload!");
+            showToast("Backup Didownload!");
         }
 
         function importBackup(input) {
@@ -885,32 +1020,29 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
+                    if(data.profile) localStorage.setItem('teacherProfile', JSON.stringify(data.profile));
+                    if(data.journals) journalHistory = data.journals;
                     
-                    if(data.profile) {
-                        localStorage.setItem('teacherProfile', JSON.stringify(data.profile));
-                        loadProfile();
-                    }
-                    if(data.journals) {
-                        journalHistory = data.journals;
-                        saveToLocalStorage();
-                    }
-
-                    showToast("Data berhasil dipulihkan!");
-                    input.value = ''; 
+                    saveToLocalStorage();
+                    loadProfile();
+                    loadHistory();
+                    renderHistoryTable();
+                    
+                    showToast("Data Berhasil Dipulihkan!");
                 } catch (err) {
-                    console.error(err);
-                    alert("File tidak valid atau rusak.");
+                    alert("File backup tidak valid.");
                 }
             };
             reader.readAsText(file);
         }
 
+        // --- UTILS ---
         function deleteJournal(id) {
-            if(confirm('Hapus data jurnal ini?')) {
+            if(confirm('Hapus jurnal ini?')) {
                 journalHistory = journalHistory.filter(j => j.id !== id);
                 saveToLocalStorage();
                 renderHistoryTable();
-                showToast("Dihapus");
+                showToast("Data Dihapus");
             }
         }
 

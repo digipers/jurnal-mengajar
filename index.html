@@ -144,7 +144,7 @@
         }
 
         /* --- STYLING KHUSUS FILTER (KOTAK KUNING) --- */
-        .filter-group { display: flex; align-items: center; gap: 10px; }
+        .filter-group { display: flex; align-items: center; gap: 10px; width: 100%; }
         
         .yellow-select {
             background-color: var(--filter-yellow) !important;
@@ -153,7 +153,6 @@
             font-weight: 600;
             padding: 8px 12px !important;
             outline: none;
-            /* Shadow agar lebih menonjol */
             box-shadow: 0 2px 4px rgba(234, 179, 8, 0.2);
         }
 
@@ -180,12 +179,13 @@
             gap: 8px;
             font-size: 0.9rem;
             justify-content: center;
+            text-decoration: none;
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-outline { border: 1px solid var(--border); background: white; color: #475569; }
-        .btn-pdf { background: #dc2626; color: white; } /* Warna Merah Marun untuk PDF */
+        .btn-pdf { background: #dc2626; color: white; }
         
         .backup-area {
             display: flex;
@@ -229,14 +229,12 @@
         }
         #toast.show { opacity: 1; }
 
-        /* --- PRINT STYLES (SIAP PDF) --- */
+        /* --- PRINT STYLES --- */
         @media print {
-            /* Sembunyikan elemen non-essential */
             .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, .filter-group, .no-print, .menu-toggle, .overlay, .backup-area, .form-group {
                 display: none !important;
             }
 
-            /* Reset layout */
             body, .main-content, .content-area {
                 height: auto;
                 overflow: visible;
@@ -253,13 +251,11 @@
                 margin-bottom: 30px; 
             }
             
-            /* Tampilan Tabel Kertas A4 */
             .table-responsive { border: none; overflow: visible; }
             table { width: 100%; font-size: 11pt; border-collapse: collapse; margin-bottom: 20px; }
             th, td { border: 1px solid #000; padding: 8px; color: #000; }
             th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
             
-            /* Print Header */
             .print-header { 
                 display: block !important; 
                 text-align: center; 
@@ -270,13 +266,12 @@
             .print-header h2 { margin-bottom: 5px; font-size: 16pt; font-weight: bold; text-transform: uppercase; }
             .print-header p { font-size: 11pt; margin: 0; }
 
-            /* Pastikan section aktif terlihat */
             .section { display: none !important; }
             .section.active { display: block !important; }
         }
         .print-header { display: none; } /* Hidden on screen */
 
-        /* --- MOBILE --- */
+        /* --- MOBILE (FIXED TOMBOL PDF) --- */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; }
             .sidebar.open { transform: translateX(260px); }
@@ -287,10 +282,34 @@
             }
             .overlay.active { display: block; }
             
-            .card-header { flex-direction: column; align-items: flex-start; }
-            .filter-group { width: 100%; flex-wrap: wrap; }
-            .yellow-select { flex: 1; }
-            .btn-pdf, .btn-danger { width: 100%; margin-top: 5px; }
+            /* Fix Layout Card Header agar Tombol PDF Tertata Rapi */
+            .card-header { 
+                flex-direction: column; 
+                align-items: stretch; /* Full width items */
+            }
+
+            /* Filter Group menjadi Vertikal di HP */
+            .filter-group { 
+                flex-direction: column !important; /* Paksa susun ke bawah */
+                align-items: stretch !important;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .yellow-select { 
+                width: 100%; 
+                order: 1; /* Select box di atas */
+                flex: none;
+            }
+            
+            /* Pastikan tombol PDF/Hapus terlihat dan di bawah */
+            .btn-pdf, .btn-danger { 
+                width: 100%; 
+                order: 2; /* Tombol di bawah */
+                margin: 0 !important; /* Reset margin manual */
+                padding: 12px !important; /* Area sentuh lebih besar */
+                display: flex !important; /* Pastikan muncul */
+            }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -360,7 +379,6 @@
 
             <!-- SECTION 3: CETAK JURNAL -->
             <section id="cetak-jurnal" class="section">
-                <!-- Header Print (Hanya tampil saat diprint/PDF) -->
                 <div class="print-header">
                     <h2 id="printSchoolName">Nama Sekolah</h2>
                     <p>Guru: <span id="printTeacherName">-</span> | Mapel: <span id="printSubject">-</span></p>
@@ -369,15 +387,16 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <span>Filter Data</span>
+                        <span style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;">Atur Tampilan:</span>
                         <div class="filter-group no-print">
-                            <!-- Kotak Kuning diterapkan disini -->
+                            <!-- Kotak Kuning -->
                             <select id="printClassFilter" class="yellow-select" onchange="renderHistoryTable()">
                                 <option value="ALL">🏫 Semua Kelas</option>
                                 <option value="X">📘 Kelas X</option>
                                 <option value="XI">📗 Kelas XI</option>
                                 <option value="XII">📕 Kelas XII</option>
                             </select>
+                            <!-- Tombol PDF -->
                             <button class="btn btn-pdf no-print" onclick="window.print()">📄 Simpan ke PDF</button>
                         </div>
                     </div>
@@ -402,7 +421,6 @@
 
             <!-- SECTION 4: REKAP ABSEN -->
             <section id="rekap-absen" class="section">
-                <!-- Header Print -->
                 <div class="print-header">
                     <h2 id="rekapPrintTitle">Rekapitulasi Kehadiran Siswa</h2>
                     <p>Nama Sekolah: <span id="rekapSchoolName"></span></p>
@@ -411,15 +429,16 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <span>Filter Rekap</span>
+                        <span style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px;">Atur Tampilan:</span>
                         <div class="filter-group no-print">
-                            <!-- Kotak Kuning diterapkan disini -->
+                            <!-- Kotak Kuning -->
                             <select id="recapClassFilter" class="yellow-select" onchange="renderRecapTable()">
                                 <option value="ALL">🏫 Semua Kelas</option>
                                 <option value="X">📘 Kelas X</option>
                                 <option value="XI">📗 Kelas XI</option>
                                 <option value="XII">📕 Kelas XII</option>
                             </select>
+                            <!-- Tombol PDF -->
                             <button class="btn btn-pdf no-print" onclick="window.print()">📄 Simpan ke PDF</button>
                         </div>
                     </div>
@@ -776,8 +795,7 @@
             
             tbody.innerHTML = '';
             
-            // Calculate Recap Data
-            let recapMap = {}; // Key: studentName, Value: { count, class }
+            let recapMap = {}; 
 
             journalHistory.forEach(j => {
                 if (filterClass !== 'ALL' && j.class !== filterClass) return;
@@ -794,13 +812,11 @@
                 });
             });
 
-            // Convert to array
             let recapArray = Object.keys(recapMap).map(name => ({
                 name: name,
                 ...recapMap[name]
             }));
 
-            // Sort by Class then Name
             recapArray.sort((a, b) => {
                 if (a.class !== b.class) return a.class.localeCompare(b.class);
                 return a.name.localeCompare(b.name);
@@ -812,10 +828,8 @@
             }
             empty.style.display = 'none';
 
-            // Update Title for Print
             title.textContent = filterClass === 'ALL' ? "Rekapitulasi Absen (Semua Kelas)" : `Rekapitulasi Absen Kelas ${filterClass}`;
 
-            // Render Table
             recapArray.forEach((data, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -875,7 +889,7 @@
                     }
 
                     showToast("Data berhasil dipulihkan!");
-                    input.value = ''; // Reset input
+                    input.value = ''; 
                 } catch (err) {
                     console.error(err);
                     alert("File tidak valid atau rusak.");

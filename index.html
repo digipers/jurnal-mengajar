@@ -2,13 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Aplikasi Jurnal Guru Digital</title>
-    <!-- Library untuk PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* CSS tetap sama seperti sebelumnya */
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
@@ -43,7 +42,6 @@
             display: flex;
         }
 
-        /* --- SIDEBAR --- */
         .sidebar {
             width: 260px;
             background-color: var(--bg-sidebar);
@@ -66,8 +64,16 @@
             gap: 10px;
         }
 
-        .nav-links { list-style: none; padding: 20px 10px; flex: 1; }
-        .nav-item { margin-bottom: 5px; }
+        .nav-links { 
+            list-style: none; 
+            padding: 20px 10px; 
+            flex: 1; 
+            overflow-y: auto;
+        }
+        
+        .nav-item { 
+            margin-bottom: 5px; 
+        }
 
         .nav-link {
             display: flex;
@@ -80,6 +86,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -87,7 +94,6 @@
             color: var(--text-sidebar-active);
         }
 
-        /* --- MAIN CONTENT --- */
         .main-content {
             flex: 1;
             display: flex;
@@ -104,6 +110,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .menu-toggle {
@@ -113,9 +121,14 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--primary);
+            padding: 5px;
         }
 
-        .page-title { font-weight: 600; font-size: 1.1rem; }
+        .page-title { 
+            font-weight: 600; 
+            font-size: 1.1rem;
+            flex: 1;
+        }
 
         .content-area {
             flex: 1;
@@ -123,9 +136,15 @@
             padding: 20px;
         }
 
-        /* --- SECTIONS --- */
-        .section { display: none; animation: fadeIn 0.3s ease; }
-        .section.active { display: block; }
+        .section { 
+            display: none; 
+            animation: fadeIn 0.3s ease;
+            max-width: 100%;
+        }
+        
+        .section.active { 
+            display: block; 
+        }
 
         .card {
             background: var(--white);
@@ -133,6 +152,7 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
         .card-header {
@@ -149,11 +169,11 @@
             gap: 10px;
         }
 
-        /* --- STYLING FILTER & TOMBOL --- */
         .filter-group { 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
+            gap: 10px;
+            flex-wrap: wrap;
         }
         
         .yellow-select {
@@ -165,22 +185,49 @@
             outline: none;
             border-radius: 6px;
             cursor: pointer;
+            min-width: 150px;
+        }
+        
+        .yellow-select.month-year-filter {
+            min-width: 100px;
+            text-align: center;
         }
 
-        /* --- FORMS & BUTTONS --- */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #475569; }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-group { 
+            margin-bottom: 15px; 
+        }
         
-        input[type="text"], input[type="date"], select, textarea {
+        label { 
+            display: block; 
+            margin-bottom: 6px; 
+            font-weight: 500; 
+            font-size: 0.9rem; 
+            color: #475569; 
+        }
+        
+        input[type="text"], input[type="date"], input[type="email"], input[type="tel"], select, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         .btn {
-            padding: 8px 16px;
+            padding: 10px 16px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
@@ -191,13 +238,23 @@
             font-size: 0.9rem;
             justify-content: center;
             text-decoration: none;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        
         .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-pdf { background: #dc2626; color: white; }
         .btn-pdf:hover { background: #b91c1c; }
+        .btn-print { background: #059669; color: white; }
+        .btn-print:hover { background: #047857; }
         
         .backup-area {
             display: flex;
@@ -210,102 +267,499 @@
             background: #f8fafc;
         }
 
-        /* --- TABLES --- */
-        .table-responsive { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background-color: #f8fafc; font-weight: 600; color: #64748b; white-space: nowrap; }
+        .table-responsive { 
+            overflow-x: auto; 
+            border-radius: 6px; 
+            border: 1px solid var(--border);
+            margin-bottom: 10px !important;
+            max-width: 100%;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 0.9rem; 
+            min-width: 600px;
+        }
+        
+        #recapTable { 
+            min-width: 1200px;
+            width: 100%;
+        }
+
+        th, td { 
+            padding: 8px 10px;
+            text-align: left; 
+            border-bottom: 1px solid var(--border); 
+            vertical-align: top;
+        }
+        
+        th { 
+            background-color: #f8fafc; 
+            font-weight: 600; 
+            color: #64748b; 
+            white-space: nowrap; 
+        }
+        
         tr:hover { background-color: #f1f5f9; }
 
-        /* --- SIGNATURE SECTION (TANDA TANGAN) --- */
+        #recapTable th:nth-child(n+3),
+        #recapTable td:nth-child(n+3) {
+            text-align: center;
+            width: 25px;
+            min-width: 25px;
+            max-width: 25px;
+            padding: 5px;
+        }
+
+        #recapTable th:last-child,
+        #recapTable td:last-child {
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
+        }
+
+        #recapTable tfoot tr {
+            font-weight: bold;
+            background-color: #e0f2fe;
+        }
+        
+        #recapTable tfoot td {
+            border-top: 2px solid var(--primary);
+            padding: 10px;
+        }
+
         .signature-section {
-            margin-top: 50px;
-            padding: 0 20px;
-            display: none; /* Disembunyikan di layar HP/Desktop biasa */
+            margin-top: 20px !important;
+            padding: 10px 0 !important;
+            display: flex;
             justify-content: space-between;
             font-size: 1rem;
             color: #000;
+            border-top: 2px solid #000;
+            page-break-inside: avoid;
+            width: 100%;
         }
+        
         .sig-block {
             text-align: center;
             min-width: 200px;
+            flex: 1;
+            margin-top: 0 !important;
         }
+        
         .sig-space {
-            height: 80px;
+            height: 60px !important;
+            margin: 10px 0 !important;
+            border-bottom: none;
         }
 
-        /* --- AUTO COMPLETE & TAGS --- */
         .search-container { position: relative; }
+        
         .suggestions {
-            position: absolute; top: 100%; left: 0; right: 0;
-            background: white; border: 1px solid var(--border);
-            max-height: 200px; overflow-y: auto; z-index: 50;
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            right: 0;
+            background: white; 
+            border: 1px solid var(--border);
+            max-height: 200px; 
+            overflow-y: auto; 
+            z-index: 50;
             box-shadow: var(--shadow);
             border-radius: 0 0 6px 6px;
         }
-        .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; }
+        
+        .suggestion-item { 
+            padding: 10px; 
+            cursor: pointer; 
+            border-bottom: 1px solid #f1f5f9; 
+            display: flex; 
+            justify-content: space-between; 
+        }
+        
         .suggestion-item:hover { background: #f1f5f9; }
         
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .tags-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            margin-top: 8px; 
+            min-height: 40px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        
         .tag { 
-            background: #e0f2fe; color: #0369a1; padding: 4px 10px; 
-            border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
-            display: flex; align-items: center; gap: 6px; 
+            background: #e0f2fe; 
+            color: #0369a1; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
         }
+        
         .tag-remove { 
-            cursor: pointer; background: #0ea5e9; color: white; 
-            border-radius: 50%; width: 16px; height: 16px; 
-            display: flex; align-items: center; justify-content: center; font-size: 10px; 
+            cursor: pointer; 
+            background: #0ea5e9; 
+            color: white; 
+            border-radius: 50%; 
+            width: 16px; 
+            height: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 10px; 
         }
 
-        /* --- TOAST --- */
         #toast {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #333; color: white; padding: 12px 24px;
-            border-radius: 8px; z-index: 2000; opacity: 0;
-            transition: opacity 0.3s; pointer-events: none;
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px;
+            background: #333; 
+            color: white; 
+            padding: 12px 24px;
+            border-radius: 8px; 
+            z-index: 2000; 
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s; 
+            pointer-events: none;
+            transform: translateY(20px);
+            max-width: 300px;
         }
-        #toast.show { opacity: 1; }
+        
+        #toast.show { 
+            opacity: 1; 
+            transform: translateY(0);
+        }
 
-        /* --- PDF LOADING OVERLAY --- */
         .pdf-loading {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); color: white;
-            z-index: 9999; display: none;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.7); 
+            color: white;
+            z-index: 9999; 
+            display: none;
             flex-direction: column;
-            align-items: center; justify-content: center;
+            align-items: center; 
+            justify-content: center;
+            text-align: center;
         }
+        
         .spinner {
-            width: 40px; height: 40px;
+            width: 50px; 
+            height: 50px;
             border: 4px solid rgba(255,255,255,0.3);
             border-top: 4px solid #fff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- PRINT STYLES --- */
-        .print-header { display: none; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333; }
-        .print-header h2 { font-size: 18pt; text-transform: uppercase; margin: 0; }
-        .print-header p { font-size: 11pt; margin: 3px 0; }
-
-        @media print {
-            .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, .filter-group, .menu-toggle, .no-print {
-                display: none !important;
-            }
-            body, .main-content, .content-area, .card {
-                background: white; width: 100%; height: auto; overflow: visible; padding: 0; margin: 0; box-shadow: none; border: none;
-            }
-            .print-header { display: block !important; }
-            .signature-section { display: flex !important; page-break-inside: avoid; } /* Tampilkan Tanda Tangan saat Print */
-            table { width: 100%; border: 1px solid #000; }
-            th, td { border: 1px solid #000; color: #000; padding: 8px; }
+        
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
         }
 
-        /* --- MOBILE RESPONSIVE --- */
+        .print-header { 
+            text-align: center; 
+            margin-bottom: 20px !important;
+            padding-bottom: 10px; 
+            border-bottom: 2px solid #333; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .print-header h2 { font-size: 18pt; text-transform: uppercase; margin: 0; }
+        .print-header h3 { font-size: 14pt; margin: 5px 0; text-transform: uppercase; }
+        .print-header p { font-size: 11pt; margin: 5px 0; }
+
+        .profile-card {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            overflow: hidden;
+            border: 4px solid white;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .profile-subject {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .profile-info-item {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .profile-info-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .photo-upload-area:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .photo-upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .photo-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+            margin: 0 auto 15px;
+            display: none;
+        }
+
+        @media print {
+            body * { 
+                visibility: hidden; 
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .print-content, .print-content * { 
+                visibility: visible !important; 
+            }
+            
+            .print-content { 
+                position: absolute !important; 
+                left: 0 !important; 
+                top: 0 !important; 
+                width: 100% !important; 
+                height: auto !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 5mm !important;
+                box-sizing: border-box !important;
+            }
+            
+            .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, 
+            .filter-group, .menu-toggle, .no-print, .no-print-pdf, .photo-upload-area,
+            #pdfLoading, #toast, .overlay { 
+                display: none !important; 
+                width: 0 !important;
+                height: 0 !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+            }
+            
+            body, .main-content, .content-area, .card, table, .signature-section {
+                background: white !important; 
+                width: 100% !important; 
+                height: auto !important; 
+                overflow: visible !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                box-shadow: none !important; 
+                border: none !important;
+                position: static !important;
+                display: block !important;
+                visibility: visible !important;
+            }
+            
+            .print-header { 
+                display: block !important; 
+                visibility: visible !important;
+                width: 100% !important;
+                margin-bottom: 10mm !important;
+            }
+            
+            .signature-section { 
+                display: flex !important; 
+                visibility: visible !important;
+                page-break-inside: avoid !important;
+                margin-top: 10mm !important;
+                padding: 5mm 0 !important;
+                width: 100% !important;
+            }
+            
+            .sig-space {
+                height: 50px !important;
+                margin: 5px 0 !important;
+            }
+            
+            table { 
+                width: 100% !important; 
+                max-width: 100% !important;
+                border: 1px solid #000 !important; 
+                font-size: 9pt !important;
+                table-layout: fixed !important;
+            }
+            
+            th, td { 
+                border: 1px solid #000 !important; 
+                color: #000 !important; 
+                padding: 2px 4px !important;
+                word-wrap: break-word !important;
+            }
+            
+            .table-responsive { 
+                overflow-x: visible !important; 
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-bottom: 5mm !important;
+            }
+            
+            #recapTable {
+                font-size: 8pt !important;
+                min-width: 100% !important;
+            }
+            
+            #recapTable th:nth-child(n+3),
+            #recapTable td:nth-child(n+3) {
+                width: 18px !important;
+                min-width: 18px !important;
+                max-width: 18px !important;
+                padding: 1px 2px !important;
+            }
+            
+            @page {
+                margin: 5mm;
+                size: A4 portrait;
+            }
+            
+            .empty-state {
+                display: none !important;
+                visibility: hidden !important;
+            }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+
+        .pdf-optimized {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 5mm !important;
+            box-sizing: border-box !important;
+        }
+
+        .pdf-optimized table {
+            width: 100% !important;
+            table-layout: fixed !important;
+        }
+
+        .pdf-optimized .table-responsive {
+            width: 100% !important;
+            overflow: visible !important;
+            margin-bottom: 5mm !important;
+        }
+
         @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; }
+            .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; top: 0; }
             .sidebar.open { transform: translateX(260px); }
             .menu-toggle { display: block; }
             .overlay {
@@ -313,102 +767,291 @@
                 background: rgba(0,0,0,0.5); z-index: 999; display: none;
             }
             .overlay.active { display: block; }
-            
-            .card-header { flex-direction: column; align-items: flex-start; }
+            .card-header { flex-direction: column; align-items: stretch; }
             .filter-group { flex-direction: column; align-items: stretch; width: 100%; margin-top: 10px; }
             .yellow-select { width: 100%; margin-bottom: 5px; }
-            .btn { width: 100%; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; margin-bottom: 5px; }
+            .content-area { padding: 15px; }
+            .signature-section { flex-direction: column; gap: 15px !important; }
+            .profile-stats { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            
+            .mobile-pdf {
+                zoom: 0.8;
+            }
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 480px) {
+            .content-area { padding: 10px; }
+            .card { padding: 15px; }
+            .profile-avatar { width: 100px; height: 100px; font-size: 2.5rem; }
+            .profile-name { font-size: 1.2rem; }
+            .profile-subject { font-size: 0.9rem; }
+            .stat-box { padding: 15px; }
+            .stat-number { font-size: 1.5rem; }
+            
+            .signature-section {
+                margin-top: 15px !important;
+                padding: 8px 0 !important;
+            }
+            
+            .sig-space {
+                height: 50px !important;
+                margin: 8px 0 !important;
+            }
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .empty-state-icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 10px 15px;
+        }
+
+        .photo-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .print-content .signature-section {
+            display: flex !important;
+        }
+        
+        .card[style*="border: none"] {
+            padding-bottom: 10px !important;
+        }
     </style>
 </head>
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="overlay" id="overlay"></div>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header"><span>📚 Jurnal Guru</span></div>
         <ul class="nav-links">
-            <li class="nav-item"><a class="nav-link active" onclick="showSection('input-profil', this)">⚙️ Data Sekolah</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="showSection('input-jurnal', this)">✏️ Input Jurnal</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="showSection('cetak-jurnal', this)">🖨️ Cetak Jurnal</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="showSection('rekap-absen', this)">📊 Rekap Absen</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="showSection('backup-restore', this)">💾 Backup & Restore</a></li>
+            <li class="nav-item"><a class="nav-link active" data-section-id="profil-guru">👤 Profil Guru</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="input-profil">⚙️ Data Sekolah</a></li>
+            <div class="nav-divider"></div>
+            <li class="nav-item"><a class="nav-link" data-section-id="input-jurnal">✏️ Input Jurnal</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="cetak-jurnal">🖨️ Cetak Jurnal</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="rekap-absen">📊 Rekap Absen</a></li>
+            <div class="nav-divider"></div>
+            <li class="nav-item"><a class="nav-link" data-section-id="backup-restore">💾 Backup & Restore</a></li>
         </ul>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
         <header class="top-bar">
-            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <div class="page-title" id="pageTitle">Data Sekolah</div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="page-title" id="pageTitle">Profil Guru</div>
             <div style="font-size: 0.8rem; color: #64748b;" id="currentDateDisplay"></div>
         </header>
 
         <div class="content-area">
             
-            <!-- SECTION 1: PROFIL -->
-            <section id="input-profil" class="section active">
+            <!-- SECTION: PROFIL GURU -->
+            <section id="profil-guru" class="section active">
                 <div class="card">
-                    <div class="card-header">Identitas Sekolah & Guru</div>
-                    <form id="profileForm">
-                        <div class="form-group"><label>Nama Sekolah</label><input type="text" id="schoolName" placeholder="SMK Negeri..." required></div>
-                        <!-- Input Kota Ditambahkan -->
-                        <div class="form-group"><label>Kota / Kabupaten (Untuk Tgl Laporan)</label><input type="text" id="schoolCity" placeholder="Contoh: Surabaya" required></div>
-                        <div class="form-group"><label>Nama Guru</label><input type="text" id="teacherName" placeholder="Nama Bapak/Ibu Guru" required></div>
-                        <div class="form-group"><label>Mata Pelajaran</label><input type="text" id="subject" placeholder="Contoh: Matematika" required></div>
-                        <div class="form-group"><label>Nama Kepala Sekolah</label><input type="text" id="principalName" placeholder="Nama Kepala Sekolah" required></div>
-                        <button type="submit" class="btn btn-primary" style="width:100%">💾 Simpan Identitas</button>
+                    <div class="card-header">
+                        <span>Profil Guru</span>
+                        <button class="btn btn-primary" id="editProfileBtn">✏️ Edit Profil</button>
+                    </div>
+                    
+                    <!-- View Mode -->
+                    <div id="profileViewMode" class="profile-card">
+                        <div class="profile-avatar" id="profileAvatarDisplay">
+                            <img id="profileAvatarImg" src="" alt="Foto Profil" style="display: none;">
+                            <span id="profileAvatarInitials">👤</span>
+                        </div>
+                        <div class="profile-name" id="profileNameDisplay">Nama Guru</div>
+                        <div class="profile-subject" id="profileSubjectDisplay">Mata Pelajaran</div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-info-item">
+                                <div class="profile-info-label">Sekolah</div>
+                                <div class="profile-info-value" id="profileSchoolDisplay">-</div>
+                            </div>
+                            <div class="profile-info-item">
+                                <div class="profile-info-label">Kelas Diajar</div>
+                                <div class="profile-info-value" id="profileClassDisplay">-</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-stats">
+                            <div class="stat-box">
+                                <div class="stat-number" id="statTotalJurnal">0</div>
+                                <div class="stat-label">Total Jurnal</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number" id="statTotalKelas">3</div>
+                                <div class="stat-label">Kelas Diajar</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number" id="statTotalSiswa">0</div>
+                                <div class="stat-label">Total Siswa</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode -->
+                    <div id="profileEditMode" style="display: none;">
+                        <form id="teacherProfileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="teacherFullName">Nama Lengkap</label>
+                                    <input type="text" id="teacherFullName" placeholder="Nama lengkap dengan gelar" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="teacherSubject">Mata Pelajaran</label>
+                                    <input type="text" id="teacherSubject" placeholder="Mata pelajaran yang diampu" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="teacherClass">Kelas yang Diajar</label>
+                                    <select id="teacherClass" multiple style="height: 120px;">
+                                        <option value="X">Kelas X</option>
+                                        <option value="XI">Kelas XI</option>
+                                        <option value="XII">Kelas XII</option>
+                                    </select>
+                                    <small style="color: #64748b;">Tahan Ctrl untuk memilih banyak kelas</small>
+                                </div>
+                            </div>
+                            <div class="btn-group" style="margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary">💾 Simpan Profil</button>
+                                <button type="button" class="btn btn-danger" id="cancelEditProfileBtn">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: DATA SEKOLAH -->
+            <section id="input-profil" class="section">
+                <div class="card">
+                    <div class="card-header">Identitas Sekolah & Foto Profil</div>
+                    
+                    <!-- Foto Profil Section -->
+                    <div class="photo-upload-area" id="photoUploadArea">
+                        <div id="photoUploadText">
+                            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;">📷</div>
+                            <h3>Unggah Foto Profil</h3>
+                            <p style="color: #64748b; font-size: 0.9rem;">Klik untuk memilih foto (JPG/PNG, maks. 2MB)</p>
+                        </div>
+                        <img id="photoPreview" class="photo-preview" alt="Preview Foto">
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    
+                    <div class="photo-controls" id="photoControls" style="display: none;">
+                        <button class="btn btn-primary" id="savePhotoBtn">Simpan Foto</button>
+                        <button class="btn btn-danger" id="removePhotoBtn">Hapus Foto</button>
+                    </div>
+                    
+                    <form id="profileForm" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label for="schoolName">Nama Sekolah</label>
+                            <input type="text" id="schoolName" placeholder="SMK Negeri..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="schoolCity">Kota / Kabupaten</label>
+                            <input type="text" id="schoolCity" placeholder="Contoh: Surabaya" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="principalName">Nama Kepala Sekolah</label>
+                            <input type="text" id="principalName" placeholder="Nama Kepala Sekolah" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="principalNIP">NIP Kepala Sekolah</label>
+                            <input type="text" id="principalNIP" placeholder="NIP Kepala Sekolah">
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">💾 Simpan Data Sekolah</button>
+                            <button type="button" class="btn btn-success" id="autoFillSampleDataBtn">📋 Contoh Data</button>
+                        </div>
                     </form>
                 </div>
             </section>
 
-            <!-- SECTION 2: INPUT JURNAL -->
+            <!-- SECTION: INPUT JURNAL -->
             <section id="input-jurnal" class="section">
                 <div class="card">
                     <div class="card-header">Catat Kegiatan Hari Ini</div>
                     <form id="journalForm">
-                        <div class="form-group"><label>Tanggal</label><input type="date" id="journalDate" required></div>
-                        <div class="form-group"><label>Kelas</label><select id="journalClass" required onchange="handleClassChange()"><option value="">-- Pilih Kelas --</option><option value="X">Kelas X</option><option value="XI">Kelas XI</option><option value="XII">Kelas XII</option></select></div>
-                        <div class="form-group"><label>Kompetensi Dasar / Materi</label><textarea id="journalKD" rows="3" placeholder="Topik pembelajaran..." required></textarea></div>
                         <div class="form-group">
-                            <label>Siswa Tidak Hadir (Cari Nama/Inisial)</label>
+                            <label for="journalDate">Tanggal</label>
+                            <input type="date" id="journalDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="journalClass">Kelas</label>
+                            <select id="journalClass" required>
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="X">Kelas X</option>
+                                <option value="XI">Kelas XI</option>
+                                <option value="XII">Kelas XII</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="journalKD">Kompetensi Dasar / Materi</label>
+                            <textarea id="journalKD" rows="3" placeholder="Topik pembelajaran..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentSearch">Siswa Tidak Hadir</label>
                             <div class="search-container">
                                 <input type="text" id="studentSearch" class="search-input" placeholder="Ketik nama siswa..." autocomplete="off" disabled>
                                 <div id="suggestions" class="suggestions" style="display:none;"></div>
                             </div>
                             <div id="selectedTags" class="tags-container"></div>
-                            <small style="color: #64748b; font-size: 0.8rem; margin-top: 5px;">*Ketuk nama siswa untuk menambahkan ke daftar absen.</small>
                         </div>
-                        <div style="margin-top: 20px;"><button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Jurnal</button></div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
+                            <button type="button" class="btn btn-danger" id="clearJournalFormBtn">Reset Form</button>
+                        </div>
                     </form>
                 </div>
             </section>
 
-            <!-- SECTION 3: CETAK JURNAL -->
+            <!-- SECTION: CETAK JURNAL -->
             <section id="cetak-jurnal" class="section">
-                <!-- Wrapper untuk PDF Capture -->
-                <div id="capture-jurnal">
+                <div id="capture-jurnal" class="print-content pdf-optimized">
                     <div class="print-header">
                         <h2 id="printSchoolName">Nama Sekolah</h2>
                         <p>Guru: <span id="printTeacherName">-</span> | Mapel: <span id="printSubject">-</span></p>
-                        <p style="margin-top: 5px; font-weight: bold; text-decoration: underline;">LAPORAN JURNAL MENGAJAR</p>
+                        <h3>LAPORAN JURNAL MENGAJAR</h3>
+                        <p style="margin-top: 5px; font-size: 10pt;">Tanggal Cetak: <span id="printDate1"></span></p>
                     </div>
 
-                    <div class="card" style="border: none; box-shadow: none;">
+                    <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
                         <div class="card-header no-print-pdf" style="border-bottom: none;">
                             <span>Riwayat Jurnal</span>
-                            <!-- Class no-print ditambahkan di sini agar hilang saat PDF -->
                             <div class="filter-group no-print">
-                                <select id="printClassFilter" class="yellow-select" onchange="renderHistoryTable()">
+                                <select id="printClassFilter" class="yellow-select">
                                     <option value="ALL">🏫 Semua Kelas</option>
                                     <option value="X">📘 Kelas X</option>
                                     <option value="XI">📗 Kelas XI</option>
                                     <option value="XII">📕 Kelas XII</option>
                                 </select>
-                                <button class="btn btn-pdf" onclick="generatePDF('jurnal')">📄 Download PDF</button>
+                                <div class="btn-group">
+                                    <button class="btn btn-pdf" id="downloadJurnalPdfBtn">📄 Download PDF</button>
+                                    <button class="btn btn-print" id="printJurnalBtn">🖨️ Print</button>
+                                </div>
                             </div>
                         </div>
 
@@ -420,115 +1063,122 @@
                                         <th style="width: 10%;">Kelas</th>
                                         <th>Materi / Kegiatan</th>
                                         <th style="width: 25%;">Absensi</th>
-                                        <!-- Header Aksi juga akan dihilangkan -->
                                         <th class="no-print" style="width: 70px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <div id="historyEmpty" style="padding: 20px; text-align: center; color: #64748b;">Belum ada data jurnal.</div>
+                            <div id="historyEmpty" class="empty-state" style="display: none;">
+                                <div class="empty-state-icon">📝</div>
+                                <h3>Belum ada data jurnal</h3>
+                                <p>Mulai dengan mengisi jurnal mengajar di menu "Input Jurnal"</p>
+                            </div>
                         </div>
 
-                        <!-- BAGIAN TANDA TANGAN (Hidden by default, shown on PDF) -->
-                        <div class="signature-section no-screen">
+                        <div class="signature-section">
                             <div class="sig-block">
                                 <p>Mengetahui,</p>
                                 <p>Kepala Sekolah</p>
                                 <div class="sig-space"></div>
                                 <p><b id="sigPrincipal1">Nama Kepala Sekolah</b></p>
-                                <p>NIP. .......................</p>
+                                <p>NIP. <span id="sigPrincipalNIP1">  </span></p>
                             </div>
                             <div class="sig-block">
                                 <p id="sigDate1">Kota, Tanggal</p>
                                 <p>Guru Mata Pelajaran</p>
                                 <div class="sig-space"></div>
                                 <p><b id="sigTeacher1">Nama Guru</b></p>
-                                <p>NIP. .......................</p>
+                                <p>NIP. <span id="sigTeacherNIP1">  </span></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 4: REKAP ABSEN -->
+            <!-- SECTION: REKAP ABSEN -->
             <section id="rekap-absen" class="section">
-                <!-- Wrapper untuk PDF Capture -->
-                <div id="capture-rekap">
+                <div id="capture-rekap" class="print-content pdf-optimized">
                     <div class="print-header">
                         <h2 id="rekapSchoolNameHeader">Nama Sekolah</h2>
-                        <h3 style="font-size: 14pt; margin: 5px 0;">REKAPITULASI KEHADIRAN SISWA</h3>
-                        <p>Tahun: <span id="rekapYear"></span></p>
+                        <h3>REKAPITULASI ABSENSI SISWA BULAN <span id="rekapMonthName"></span> TAHUN <span id="rekapYearPrint"></span></h3>
+                        <p style="margin-top: 5px; font-size: 10pt;">Tanggal Cetak: <span id="printDate2"></span></p>
                     </div>
 
-                    <div class="card" style="border: none; box-shadow: none;">
+                    <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
                         <div class="card-header no-print-pdf" style="border-bottom: none;">
                             <span>Rekapitulasi</span>
-                            <!-- Class no-print ditambahkan di sini -->
                             <div class="filter-group no-print">
-                                <select id="recapClassFilter" class="yellow-select" onchange="renderRecapTable()">
+                                <select id="recapMonthFilter" class="yellow-select month-year-filter"></select>
+                                <select id="recapYearFilter" class="yellow-select month-year-filter"></select>
+                                <select id="recapClassFilter" class="yellow-select">
                                     <option value="ALL">🏫 Semua Kelas</option>
                                     <option value="X">📘 Kelas X</option>
                                     <option value="XI">📗 Kelas XI</option>
                                     <option value="XII">📕 Kelas XII</option>
                                 </select>
-                                <button class="btn btn-pdf" onclick="generatePDF('rekap')">📄 Download PDF</button>
+                                <div class="btn-group">
+                                    <button class="btn btn-pdf" id="downloadRekapPdfBtn">📄 Download PDF</button>
+                                    <button class="btn btn-print" id="printRekapBtn">🖨️ Print</button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="table-responsive">
                             <table id="recapTable">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 50px;">No</th>
-                                        <th>Nama Siswa</th>
-                                        <th>Kelas</th>
-                                        <th style="width: 100px; text-align: center;">Jml Absen</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recapBody">
-                                    <!-- Data Rekap -->
-                                </tbody>
+                                <thead></thead>
+                                <tbody id="recapBody"></tbody>
+                                <tfoot id="recapFoot"></tfoot>
                             </table>
-                            <div id="recapEmpty" style="padding: 20px; text-align: center; color: #64748b;">Tidak ada data siswa yang absen.</div>
+                            <div id="recapEmpty" class="empty-state" style="display: none;">
+                                <div class="empty-state-icon">✅</div>
+                                <h3>Tidak ada data absensi</h3>
+                                <p>Pastikan Anda telah mengisi jurnal untuk bulan dan kelas yang dipilih.</p>
+                            </div>
                         </div>
 
-                        <!-- BAGIAN TANDA TANGAN (Hidden by default, shown on PDF) -->
-                        <div class="signature-section no-screen">
+                        <div class="signature-section">
                             <div class="sig-block">
                                 <p>Mengetahui,</p>
                                 <p>Kepala Sekolah</p>
                                 <div class="sig-space"></div>
                                 <p><b id="sigPrincipal2">Nama Kepala Sekolah</b></p>
-                                <p>NIP. .......................</p>
+                                <p>NIP. <span id="sigPrincipalNIP2">  </span></p>
                             </div>
                             <div class="sig-block">
                                 <p id="sigDate2">Kota, Tanggal</p>
                                 <p>Guru Mata Pelajaran</p>
                                 <div class="sig-space"></div>
                                 <p><b id="sigTeacher2">Nama Guru</b></p>
-                                <p>NIP. .......................</p>
+                                <p>NIP. <span id="sigTeacherNIP2">  </span></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 5: BACKUP & RESTORE -->
+            <!-- SECTION: BACKUP & RESTORE -->
             <section id="backup-restore" class="section">
                 <div class="card">
                     <div class="card-header">Backup & Restore Data</div>
                     <div class="backup-area">
                         <div>
                             <h3>💾 Backup Data</h3>
-                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Download data jurnal ke file .json</p>
-                            <button class="btn btn-primary" onclick="exportBackup()">Download Backup</button>
+                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">
+                                Download semua data ke file .json
+                            </p>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" id="exportBackupBtn">Download Backup</button>
+                                <button class="btn btn-danger" id="confirmClearDataBtn">Hapus Semua Data</button>
+                            </div>
                         </div>
                         <hr style="border: 0; border-top: 1px solid #ddd;">
                         <div>
                             <h3>📂 Restore Data</h3>
-                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">Upload file .json untuk mengembalikan data</p>
-                            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importBackup(this)">
-                            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">Pilih File</button>
+                            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 10px;">
+                                Upload file .json untuk mengembalikan data
+                            </p>
+                            <input type="file" id="fileInput" accept=".json" style="display:none">
+                            <button class="btn btn-success" id="selectFileBtn">Pilih File Backup</button>
                         </div>
                     </div>
                 </div>
@@ -537,11 +1187,10 @@
         </div>
     </main>
 
-    <!-- TOAST & LOADING -->
     <div id="toast">Pesan</div>
     <div id="pdfLoading" class="pdf-loading">
         <div class="spinner"></div>
-        <div style="font-weight: bold;">Sedang Membuat PDF...</div>
+        <div style="font-weight: bold; font-size: 1.2rem;">Sedang Membuat PDF...</div>
         <small>Mohon tunggu sebentar</small>
     </div>
 
@@ -595,7 +1244,7 @@
             { nis: '0091403540', nama: 'Tomi Jadmiko', kelas: 'XI (Sebelas)' },
             { nis: '0086855084', nama: 'Tia Dwi Saputri', kelas: 'XI (Sebelas)' },
             { nis: '0000000005', nama: 'Wafiq Khariri', kelas: 'XI (Sebelas)' },
-            { nis: '0095475420', nama: 'Yeni Winarni', kelas: 'XI (Sebelas)' },
+            { nis: '0095475421', nama: 'Yeni Winarni', kelas: 'XI (Sebelas)' },
             { nis: '0000000006', nama: 'Ainun Nadhiroh', kelas: 'XI (Sebelas)' },
             { nis: '0098781514', nama: 'Habibatus Zakia', kelas: 'XI (Sebelas)' },
             { nis: '3096763981', nama: 'Dwi Fatimah', kelas: 'XI (Sebelas)' },
@@ -623,7 +1272,7 @@
             { nis: '0084244287', nama: 'Muhamad Misbahul Munir', kelas: 'XII (dua Belas)' },
             { nis: '0089726548', nama: 'Muhammad Rejaki', kelas: 'XII (dua Belas)' },
             { nis: '0077347477', nama: 'Mohammad Sulton Al-azhar', kelas: 'XII (dua Belas)' },
-            { nis: '0085214724', nama: 'Nanda Ayu Ningsih', kelas: 'XII (dua Belas)' },
+            { nis: '0085214725', nama: 'Nanda Ayu Ningsih', kelas: 'XII (dua Belas)' },
             { nis: '0000000012', nama: 'Nayla Amin', kelas: 'XII (dua Belas)' },
             { nis: '0071174694', nama: 'Rahma Wulandari', kelas: 'XII (dua Belas)' },
             { nis: '0084479963', nama: 'Rendi Hidayat', kelas: 'XII (dua Belas)' },
@@ -634,114 +1283,406 @@
             { nis: '0084034253', nama: 'Wahyuni Naila Ngilma', kelas: 'XII (dua Belas)' },
             { nis: '0087602782', nama: 'Laura Meliyana Dewi', kelas: 'XII (dua Belas)' },
             { nis: '0000000010', nama: 'EKO NUZULUL MISBAH', kelas: 'XII (dua Belas)' },
-            { nis: '0000000011', nama: 'MUHAMAD KHOIRUR ROZIKIN', kelas: 'XII (dua Belas)' }
         ];
 
-        // Grouping Data
         let studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
+        let studentNISMap = {};
         let selectedStudents = [];
         let journalHistory = [];
+        let teacherProfile = {};
+        let schoolProfile = {};
+        let currentPhotoData = null;
+        
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', options);
-            document.getElementById('rekapYear').textContent = new Date().getFullYear();
-
-            loadProfile();
-            groupStudents();
-            loadHistory();
+            
+            initializeApp();
+            addEventListeners();
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    document.getElementById('suggestions').style.display = 'none';
+                }
+            });
         });
 
-        // Navigation
+        function initializeApp() {
+            // Load semua data
+            loadAllData();
+            
+            // Group siswa - INI FUNGSI YANG DIPERBAIKI
+            groupStudents();
+            
+            // Load history jurnal
+            loadHistory();
+            
+            // Update tampilan
+            updateProfileDisplay();
+            
+            // Populate filter rekap
+            populateRecapFilters();
+            
+            // Load foto profil jika ada
+            loadProfilePhoto();
+            
+            // Update tanggal cetak
+            updatePrintDates();
+        }
+
+        function loadAllData() {
+            // Load teacher profile
+            teacherProfile = JSON.parse(localStorage.getItem('teacherProfile') || '{}');
+            
+            // Load school profile
+            schoolProfile = JSON.parse(localStorage.getItem('schoolProfile') || '{}');
+            
+            // Isi form jika ada data
+            if(schoolProfile) {
+                document.getElementById('schoolName').value = schoolProfile.school || '';
+                document.getElementById('schoolCity').value = schoolProfile.city || '';
+                document.getElementById('principalName').value = schoolProfile.principal || '';
+                document.getElementById('principalNIP').value = schoolProfile.principalNIP || '';
+            }
+        }
+
+        function loadProfilePhoto() {
+            const photoData = localStorage.getItem('teacherPhoto');
+            if (photoData) {
+                currentPhotoData = photoData;
+                const photoPreview = document.getElementById('photoPreview');
+                const photoUploadText = document.getElementById('photoUploadText');
+                const photoControls = document.getElementById('photoControls');
+                const profileAvatarImg = document.getElementById('profileAvatarImg');
+                const profileAvatarInitials = document.getElementById('profileAvatarInitials');
+                
+                photoPreview.src = photoData;
+                photoPreview.style.display = 'block';
+                photoUploadText.style.display = 'none';
+                photoControls.style.display = 'flex';
+                
+                profileAvatarImg.src = photoData;
+                profileAvatarImg.style.display = 'block';
+                profileAvatarInitials.style.display = 'none';
+            }
+        }
+
+        function updatePrintDates() {
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            document.getElementById('printDate1').textContent = formattedDate;
+            document.getElementById('printDate2').textContent = formattedDate;
+        }
+
+        function addEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    showSection(this.dataset.sectionId, this);
+                });
+            });
+
+            document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
+            // Profile Guru Events
+            document.getElementById('editProfileBtn').addEventListener('click', toggleProfileEdit);
+            document.getElementById('cancelEditProfileBtn').addEventListener('click', toggleProfileEdit);
+            document.getElementById('teacherProfileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveTeacherProfile();
+            });
+
+            // School Profile & Photo
+            document.getElementById('profileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveSchoolProfile();
+            });
+            document.getElementById('autoFillSampleDataBtn').addEventListener('click', autoFillSampleData);
+            
+            // Photo Upload
+            document.getElementById('photoUploadArea').addEventListener('click', () => {
+                document.getElementById('photoInput').click();
+            });
+            document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+            document.getElementById('savePhotoBtn').addEventListener('click', saveProfilePhoto);
+            document.getElementById('removePhotoBtn').addEventListener('click', removeProfilePhoto);
+
+            // Journal Form
+            document.getElementById('journalClass').addEventListener('change', handleClassChange);
+            document.getElementById('studentSearch').addEventListener('input', (e) => {
+                const query = e.target.value;
+                const cls = document.getElementById('journalClass').value;
+                displaySuggestions(query, cls);
+            });
+            document.getElementById('journalForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveJournalEntry();
+            });
+            document.getElementById('clearJournalFormBtn').addEventListener('click', clearJournalForm);
+
+            // Print/PDF Events
+            document.getElementById('printClassFilter').addEventListener('change', renderHistoryTable);
+            document.getElementById('downloadJurnalPdfBtn').addEventListener('click', () => generatePDF('jurnal'));
+            document.getElementById('printJurnalBtn').addEventListener('click', () => printSection('jurnal'));
+
+            document.getElementById('recapMonthFilter').addEventListener('change', renderRecapTable);
+            document.getElementById('recapYearFilter').addEventListener('change', renderRecapTable);
+            document.getElementById('recapClassFilter').addEventListener('change', renderRecapTable);
+            document.getElementById('downloadRekapPdfBtn').addEventListener('click', () => generatePDF('rekap'));
+            document.getElementById('printRekapBtn').addEventListener('click', () => printSection('rekap'));
+
+            // Backup/Restore Events
+            document.getElementById('exportBackupBtn').addEventListener('click', exportBackup);
+            document.getElementById('confirmClearDataBtn').addEventListener('click', confirmClearData);
+            document.getElementById('selectFileBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+            document.getElementById('fileInput').addEventListener('change', function() {
+                importBackup(this);
+            });
+        }
+
+        // --- FUNGSI UTAMA YANG DIPERBAIKI ---
+
+        function groupStudents() {
+            studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
+            studentNISMap = {};
+
+            students.forEach(s => {
+                let className = '';
+                if (s.kelas.includes('Sepuluh') || s.kelas === 'X') {
+                    className = 'X';
+                } else if (s.kelas.includes('Sebelas') || s.kelas === 'XI') {
+                    className = 'XI';
+                } else if (s.kelas.includes('Belas') || s.kelas === 'XII') {
+                    className = 'XII';
+                }
+                
+                s.className = className;
+                
+                if (studentDatabase[className]) {
+                    studentDatabase[className].push(s);
+                    studentNISMap[s.nama] = s.nis;
+                }
+            });
+            
+            for (const cls in studentDatabase) {
+                studentDatabase[cls].sort((a, b) => a.nama.localeCompare(b.nama));
+            }
+        }
+
         function showSection(sectionId, navElement) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             navElement.classList.add('active');
-            document.getElementById('pageTitle').textContent = navElement.innerText.trim();
+            document.getElementById('pageTitle').textContent = navElement.innerText.replace(/[^\w\s&]/g, '').trim();
 
             if(window.innerWidth <= 768) toggleSidebar();
-
-            if(sectionId === 'cetak-jurnal') renderHistoryTable();
+            
+            if(sectionId === 'profil-guru') updateProfileDisplay();
+            if(sectionId === 'cetak-jurnal') {
+                renderHistoryTable();
+                updatePrintDates();
+            }
             if(sectionId === 'rekap-absen') {
-                const school = document.getElementById('schoolName').value || 'Nama Sekolah';
-                document.getElementById('rekapSchoolNameHeader').textContent = school;
+                document.getElementById('rekapSchoolNameHeader').textContent = document.getElementById('schoolName').value || 'Nama Sekolah';
                 renderRecapTable();
+                updatePrintDates();
             }
         }
 
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
         }
 
-        // --- LOGIC DATABASE SISWA ---
-        function groupStudents() {
-            students.forEach(s => {
-                let key = '';
-                const k = s.kelas.toLowerCase();
-                if (k.includes('sepuluh') || k === 'x') key = 'X';
-                else if (k.includes('sebelas') || k === 'xi') key = 'XI';
-                else if (k.includes('dua belas') || k === 'xii') key = 'XII';
+        function toggleProfileEdit() {
+            const viewMode = document.getElementById('profileViewMode');
+            const editMode = document.getElementById('profileEditMode');
+            const editBtn = document.getElementById('editProfileBtn');
+            
+            if (viewMode.style.display !== 'none') {
+                viewMode.style.display = 'none';
+                editMode.style.display = 'block';
+                editBtn.style.display = 'none';
                 
-                if(key && studentDatabase[key]) studentDatabase[key].push(s);
-            });
+                // Load existing data into form
+                document.getElementById('teacherFullName').value = teacherProfile.name || '';
+                document.getElementById('teacherSubject').value = teacherProfile.subject || '';
+                
+                // Set selected classes
+                const classSelect = document.getElementById('teacherClass');
+                if (teacherProfile.classes) {
+                    const classesArray = teacherProfile.classes.split(',');
+                    for (let i = 0; i < classSelect.options.length; i++) {
+                        classSelect.options[i].selected = classesArray.includes(classSelect.options[i].value);
+                    }
+                }
+            } else {
+                viewMode.style.display = 'block';
+                editMode.style.display = 'none';
+                editBtn.style.display = 'inline-flex';
+            }
         }
 
-        // --- LOCAL STORAGE & PROFIL ---
-        function saveToLocalStorage() {
-            const profile = {
+        function saveTeacherProfile() {
+            const selectedClasses = Array.from(document.getElementById('teacherClass').selectedOptions)
+                .map(opt => opt.value)
+                .join(',');
+            
+            teacherProfile = {
+                name: document.getElementById('teacherFullName').value,
+                subject: document.getElementById('teacherSubject').value,
+                classes: selectedClasses
+            };
+            
+            localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
+            updateProfileDisplay();
+            toggleProfileEdit();
+            showToast("Profil Guru Berhasil Disimpan!", 'success');
+        }
+
+        function updateProfileDisplay() {
+            // Update profile card display
+            document.getElementById('profileNameDisplay').textContent = teacherProfile.name || 'Nama Guru';
+            document.getElementById('profileSubjectDisplay').textContent = teacherProfile.subject || 'Mata Pelajaran';
+            document.getElementById('profileSchoolDisplay').textContent = schoolProfile.school || '-';
+            
+            // Update kelas diajar
+            const classesArray = teacherProfile.classes ? teacherProfile.classes.split(',') : [];
+            document.getElementById('profileClassDisplay').textContent = classesArray.map(c => `Kelas ${c}`).join(', ') || '-';
+            
+            // Update avatar with initials or photo
+            const name = teacherProfile.name || '';
+            if (currentPhotoData) {
+                document.getElementById('profileAvatarImg').style.display = 'block';
+                document.getElementById('profileAvatarInitials').style.display = 'none';
+            } else {
+                const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '👤';
+                document.getElementById('profileAvatarImg').style.display = 'none';
+                document.getElementById('profileAvatarInitials').style.display = 'block';
+                document.getElementById('profileAvatarInitials').textContent = initials.length > 0 && name ? initials : '👤';
+            }
+            
+            // Update statistics
+            document.getElementById('statTotalJurnal').textContent = journalHistory.length;
+            document.getElementById('statTotalSiswa').textContent = students.length;
+            
+            // Update print headers
+            document.getElementById('printTeacherName').textContent = teacherProfile.name || '-';
+            document.getElementById('printSubject').textContent = teacherProfile.subject || '-';
+            document.getElementById('printSchoolName').textContent = schoolProfile.school || 'Nama Sekolah';
+            
+            // Update signature sections
+            document.getElementById('sigTeacher1').textContent = teacherProfile.name || 'Nama Guru';
+            document.getElementById('sigTeacher2').textContent = teacherProfile.name || 'Nama Guru';
+            document.getElementById('sigPrincipal1').textContent = schoolProfile.principal || 'Nama Kepala Sekolah';
+            document.getElementById('sigPrincipal2').textContent = schoolProfile.principal || 'Nama Kepala Sekolah';
+            document.getElementById('sigPrincipalNIP1').textContent = schoolProfile.principalNIP || '-';
+            document.getElementById('sigPrincipalNIP2').textContent = schoolProfile.principalNIP || '-';
+            
+            // Update tanggal cetak
+            updatePrintDates();
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validasi ukuran file (maks 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showToast("Ukuran file terlalu besar. Maksimal 2MB", 'error');
+                return;
+            }
+            
+            // Validasi tipe file
+            if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+                showToast("Format file tidak didukung. Gunakan JPG atau PNG", 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoPreview = document.getElementById('photoPreview');
+                const photoUploadText = document.getElementById('photoUploadText');
+                const photoControls = document.getElementById('photoControls');
+                
+                photoPreview.src = e.target.result;
+                photoPreview.style.display = 'block';
+                photoUploadText.style.display = 'none';
+                photoControls.style.display = 'flex';
+                
+                currentPhotoData = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfilePhoto() {
+            if (currentPhotoData) {
+                localStorage.setItem('teacherPhoto', currentPhotoData);
+                updateProfileDisplay();
+                showToast("Foto profil berhasil disimpan!", 'success');
+            }
+        }
+
+        function removeProfilePhoto() {
+            if (confirm('Hapus foto profil?')) {
+                localStorage.removeItem('teacherPhoto');
+                currentPhotoData = null;
+                
+                const photoPreview = document.getElementById('photoPreview');
+                const photoUploadText = document.getElementById('photoUploadText');
+                const photoControls = document.getElementById('photoControls');
+                const profileAvatarImg = document.getElementById('profileAvatarImg');
+                const profileAvatarInitials = document.getElementById('profileAvatarInitials');
+                
+                photoPreview.style.display = 'none';
+                photoUploadText.style.display = 'block';
+                photoControls.style.display = 'none';
+                
+                profileAvatarImg.style.display = 'none';
+                profileAvatarInitials.style.display = 'block';
+                
+                document.getElementById('photoInput').value = '';
+                
+                updateProfileDisplay();
+                showToast("Foto profil dihapus", 'warning');
+            }
+        }
+
+        function saveSchoolProfile() {
+            schoolProfile = {
                 school: document.getElementById('schoolName').value,
                 city: document.getElementById('schoolCity').value,
-                teacher: document.getElementById('teacherName').value,
-                subject: document.getElementById('subject').value,
-                principal: document.getElementById('principalName').value
+                principal: document.getElementById('principalName').value,
+                principalNIP: document.getElementById('principalNIP').value
             };
-            localStorage.setItem('teacherProfile', JSON.stringify(profile));
-            localStorage.setItem('journals', JSON.stringify(journalHistory));
-        }
-
-        function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem('teacherProfile'));
-            if(profile) {
-                document.getElementById('schoolName').value = profile.school || '';
-                document.getElementById('schoolCity').value = profile.city || '';
-                document.getElementById('teacherName').value = profile.teacher || '';
-                document.getElementById('subject').value = profile.subject || '';
-                document.getElementById('principalName').value = profile.principal || '';
-
-                // Set Text untuk Print Header & Tanda Tangan
-                document.getElementById('printSchoolName').textContent = profile.school || 'Nama Sekolah';
-                document.getElementById('printTeacherName').textContent = profile.teacher || '-';
-                document.getElementById('printSubject').textContent = profile.subject || '-';
-                
-                // Isi Nama di Tanda Tangan
-                ['sigPrincipal1', 'sigPrincipal2'].forEach(id => {
-                    document.getElementById(id).textContent = profile.principal || 'Nama Kepala Sekolah';
-                });
-                ['sigTeacher1', 'sigTeacher2'].forEach(id => {
-                    document.getElementById(id).textContent = profile.teacher || 'Nama Guru';
-                });
-            }
+            
+            localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
+            updateProfileDisplay();
+            showToast("Data Sekolah Berhasil Disimpan!", 'success');
         }
 
         function loadHistory() {
             const history = JSON.parse(localStorage.getItem('journals'));
-            if(history) journalHistory = history;
+            if(history) {
+                journalHistory = history.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
         }
 
-        document.getElementById('profileForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            saveToLocalStorage();
-            loadProfile();
-            showToast("Profil Sekolah Disimpan!");
-        });
-
-        // --- INPUT JURNAL ---
         function handleClassChange() {
             selectedStudents = [];
             renderTags();
@@ -749,11 +1690,10 @@
             const cls = document.getElementById('journalClass').value;
             document.getElementById('studentSearch').disabled = !cls;
             if(cls) document.getElementById('studentSearch').focus();
+            else document.getElementById('suggestions').style.display = 'none';
         }
 
-        document.getElementById('studentSearch').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const cls = document.getElementById('journalClass').value;
+        function displaySuggestions(query, cls) {
             const sugg = document.getElementById('suggestions');
             
             if(!cls || query.length === 0) {
@@ -762,7 +1702,7 @@
             }
 
             const matches = studentDatabase[cls].filter(s => 
-                s.nama.toLowerCase().includes(query) && !selectedStudents.includes(s.nama)
+                s.nama.toLowerCase().includes(query.toLowerCase()) && !selectedStudents.includes(s.nama)
             );
 
             sugg.innerHTML = '';
@@ -771,22 +1711,26 @@
                 matches.forEach(m => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
-                    div.innerHTML = `<span>${m.nama}</span> <small>${m.nis}</small>`;
-                    div.onclick = () => {
+                    div.innerHTML = `<span>${m.nama}</span> <small style="color: #64748b;">${m.nis}</small>`;
+                    div.addEventListener('click', () => {
                         addStudent(m.nama);
+                        document.getElementById('studentSearch').value = '';
                         document.getElementById('studentSearch').focus();
-                    };
+                    });
                     sugg.appendChild(div);
                 });
             } else {
                 sugg.style.display = 'none';
             }
-        });
+        }
 
         function addStudent(name) {
-            if(!selectedStudents.includes(name)) selectedStudents.push(name);
+            if(!selectedStudents.includes(name)) {
+                selectedStudents.push(name);
+                selectedStudents.sort();
+                showToast(`${name} ditambahkan`, 'info');
+            }
             renderTags();
-            document.getElementById('studentSearch').value = '';
             document.getElementById('suggestions').style.display = 'none';
         }
 
@@ -797,32 +1741,65 @@
 
         function renderTags() {
             const container = document.getElementById('selectedTags');
-            container.innerHTML = selectedStudents.map(s => `
-                <div class="tag">${s} <span class="tag-remove" onclick="removeStudent('${s}')">×</span></div>
-            `).join('');
+            if(selectedStudents.length === 0) {
+                container.innerHTML = '<div style="color: #64748b; font-style: italic;">Belum ada siswa yang dipilih</div>';
+            } else {
+                container.innerHTML = selectedStudents.map(s => `
+                    <div class="tag">${s} <span class="tag-remove" data-student-name="${s}">×</span></div>
+                `).join('');
+                container.querySelectorAll('.tag-remove').forEach(btn => {
+                    btn.addEventListener('click', (e) => removeStudent(e.target.dataset.studentName));
+                });
+            }
         }
 
-        document.getElementById('journalForm').addEventListener('submit', (e) => {
-            e.preventDefault();
+        function clearJournalForm() {
+            if(confirm('Reset form input jurnal?')) {
+                document.getElementById('journalForm').reset();
+                document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+                selectedStudents = [];
+                renderTags();
+                handleClassChange();
+                showToast("Form berhasil direset", 'info');
+            }
+        }
+
+        function saveJournalEntry() {
+            const date = document.getElementById('journalDate').value;
+            const kelas = document.getElementById('journalClass').value;
+            const kd = document.getElementById('journalKD').value;
+            
+            if(!date || !kelas || !kd) {
+                showToast("Harap lengkapi semua field!", 'error');
+                return;
+            }
+
             const newEntry = {
                 id: Date.now(),
-                date: document.getElementById('journalDate').value,
-                class: document.getElementById('journalClass').value,
-                kd: document.getElementById('journalKD').value,
+                date: date,
+                class: kelas,
+                kd: kd,
                 absent: [...selectedStudents]
             };
-            journalHistory.push(newEntry);
-            saveToLocalStorage();
-            showToast("Jurnal Berhasil Disimpan!");
             
-            e.target.reset();
+            journalHistory.push(newEntry);
+            journalHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem('journals', JSON.stringify(journalHistory));
+            updateProfileDisplay();
+            showToast("Jurnal Berhasil Disimpan!", 'success');
+            
+            document.getElementById('journalForm').reset();
             document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             selectedStudents = [];
             renderTags();
             handleClassChange();
-        });
+            
+            setTimeout(() => {
+                const cetakLink = document.querySelector('.nav-link[data-section-id="cetak-jurnal"]');
+                if (cetakLink) showSection('cetak-jurnal', cetakLink);
+            }, 1000);
+        }
 
-        // --- TABLE RENDER ---
         function renderHistoryTable() {
             const filterClass = document.getElementById('printClassFilter').value;
             const tbody = document.querySelector('#historyTable tbody');
@@ -839,9 +1816,11 @@
                 empty.style.display = 'block';
                 return;
             }
+            
             empty.style.display = 'none';
-
-            [...displayData].reverse().forEach(j => {
+            const sortedData = [...displayData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedData.forEach(j => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${formatDate(j.date)}</td>
@@ -849,156 +1828,388 @@
                     <td>${j.kd}</td>
                     <td>${j.absent.length > 0 ? j.absent.join(', ') : '<span style="color:var(--success)">Hadir Semua</span>'}</td>
                     <td class="no-print">
-                        <button class="btn btn-danger" style="padding:4px 8px; font-size:0.7rem;" onclick="deleteJournal(${j.id})">Hapus</button>
+                        <button class="btn btn-danger" style="padding:4px 8px; font-size:0.7rem;" data-journal-id="${j.id}">Hapus</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            
+            tbody.querySelectorAll('.btn-danger[data-journal-id]').forEach(btn => {
+                btn.addEventListener('click', (e) => deleteJournal(parseInt(e.target.dataset.journalId)));
+            });
+        }
+
+        function populateRecapFilters() {
+            const monthSelect = document.getElementById('recapMonthFilter');
+            const yearSelect = document.getElementById('recapYearFilter');
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+
+            monthSelect.innerHTML = '';
+            yearSelect.innerHTML = '';
+
+            monthNames.forEach((name, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = name;
+                monthSelect.appendChild(option);
+            });
+
+            for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            monthSelect.value = currentMonth;
+            yearSelect.value = currentYear;
+            
+            document.getElementById('rekapMonthName').textContent = monthNames[currentMonth];
+            document.getElementById('rekapYearPrint').textContent = currentYear;
         }
 
         function renderRecapTable() {
-            const filterClass = document.getElementById('recapClassFilter').value;
+            const month = parseInt(document.getElementById('recapMonthFilter').value);
+            const year = parseInt(document.getElementById('recapYearFilter').value);
+            const classFilter = document.getElementById('recapClassFilter').value;
             const tbody = document.getElementById('recapBody');
+            const thead = document.querySelector('#recapTable thead');
+            const tfoot = document.getElementById('recapFoot');
             const empty = document.getElementById('recapEmpty');
             
             tbody.innerHTML = '';
-            let recapMap = {}; 
+            thead.innerHTML = '';
+            tfoot.innerHTML = '';
 
-            journalHistory.forEach(j => {
-                if (filterClass !== 'ALL' && j.class !== filterClass) return;
-                j.absent.forEach(studentName => {
-                    if (recapMap[studentName]) {
-                        recapMap[studentName].count++;
-                    } else {
-                        recapMap[studentName] = { count: 1, class: j.class };
-                    }
-                });
+            document.getElementById('rekapMonthName').textContent = monthNames[month];
+            document.getElementById('rekapYearPrint').textContent = year;
+
+            const daysInMonth = getDaysInMonth(month, year);
+
+            let headerRow = '<tr><th style="width: 40px;">No</th><th style="min-width: 150px;">Nama</th>';
+            for (let i = 1; i <= daysInMonth; i++) {
+                headerRow += `<th>${i}</th>`;
+            }
+            headerRow += '<th style="width: 80px;">Total</th></tr>';
+            thead.innerHTML = headerRow;
+
+            let studentsInScope = [];
+            if (classFilter === 'ALL') {
+                for (const cls in studentDatabase) {
+                    studentsInScope = studentsInScope.concat(studentDatabase[cls]);
+                }
+            } else {
+                studentsInScope = studentDatabase[classFilter] || [];
+            }
+            
+            studentsInScope.sort((a, b) => {
+                const classOrder = { 'X': 0, 'XI': 1, 'XII': 2 };
+                if (a.className !== b.className) {
+                    return classOrder[a.className] - classOrder[b.className];
+                }
+                return a.nama.localeCompare(b.nama);
             });
 
-            let recapArray = Object.keys(recapMap).map(name => ({
-                name: name,
-                ...recapMap[name]
-            }));
-
-            recapArray.sort((a, b) => {
-                if (a.class !== b.class) return a.class.localeCompare(b.class);
-                return a.name.localeCompare(b.name);
-            });
-
-            if (recapArray.length === 0) {
+            if (studentsInScope.length === 0) {
                 empty.style.display = 'block';
                 return;
             }
-            empty.style.display = 'none';
 
-            recapArray.forEach((data, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${data.name}</td>
-                    <td><strong>${data.class}</strong></td>
-                    <td style="text-align: center;">
-                        <span class="tag" style="background:var(--danger); color:white; justify-content:center;">${data.count}</span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            const absenceRecords = new Map(studentsInScope.map(s => [s.nama, { 
+                absences: new Array(daysInMonth).fill(false),
+                total: 0,
+                class: s.className,
+                nis: s.nis
+            }]));
+
+            let totalClassAbsences = 0;
+
+            journalHistory.forEach(journal => {
+                const journalDate = new Date(journal.date + 'T00:00:00');
+                if (journalDate.getMonth() === month && journalDate.getFullYear() === year) {
+                    if (classFilter === 'ALL' || journal.class === classFilter) {
+                        const day = journalDate.getDate();
+                        journal.absent.forEach(absentStudentName => {
+                            if (absenceRecords.has(absentStudentName)) {
+                                const record = absenceRecords.get(absentStudentName);
+                                if (classFilter === 'ALL' || record.class === journal.class) {
+                                    if (!record.absences[day - 1]) {
+                                        record.absences[day - 1] = true;
+                                        record.total++;
+                                        totalClassAbsences++;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
             });
+
+            let studentCounter = 0;
+            studentsInScope.forEach(student => {
+                const record = absenceRecords.get(student.nama);
+                if (!record) return;
+
+                studentCounter++;
+                let rowHtml = `<tr><td>${studentCounter}</td><td>${student.nama}</td>`; 
+                for (let i = 0; i < daysInMonth; i++) {
+                    rowHtml += `<td>${record.absences[i] ? '✓' : ''}</td>`;
+                }
+                rowHtml += `<td>${record.total}</td></tr>`;
+                tbody.innerHTML += rowHtml;
+            });
+
+            // Hanya tampilkan total jika ada data absensi
+            if (totalClassAbsences > 0) {
+                let totalFooterRow = `<tr><td colspan="2"><strong>Total Ketidakhadiran</strong></td>`;
+                for (let i = 1; i <= daysInMonth; i++) {
+                    totalFooterRow += `<td></td>`;
+                }
+                totalFooterRow += `<td><strong>${totalClassAbsences}</strong></td></tr>`;
+                tfoot.innerHTML = totalFooterRow;
+            }
+
+            empty.style.display = totalClassAbsences === 0 ? 'block' : 'none';
         }
 
-        // --- PDF GENERATION LOGIC ---
-        function generatePDF(type) {
+        async function generatePDF(type) {
             const loading = document.getElementById('pdfLoading');
             loading.style.display = 'flex';
 
-            setTimeout(() => {
+            try {
                 let elementId, filename;
-                
-                // Update Tanggal Tanda Tangan Otomatis
-                const city = document.getElementById('schoolCity').value || 'Kota';
+                const city = schoolProfile.city || 'Kota';
                 const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const fullDate = `${city}, ${today}`;
+                
+                // Update tanggal signature sebelum generate PDF
+                document.getElementById('sigDate1').textContent = fullDate;
+                document.getElementById('sigDate2').textContent = fullDate;
                 
                 if (type === 'jurnal') {
                     elementId = 'capture-jurnal';
                     filename = 'Jurnal_Mengajar';
-                    document.getElementById('sigDate1').textContent = fullDate;
+                    
+                    // Cek apakah ada data sebelum generate PDF
+                    const filterClass = document.getElementById('printClassFilter').value;
+                    let displayData = journalHistory;
+                    if(filterClass !== 'ALL') {
+                        displayData = journalHistory.filter(j => j.class === filterClass);
+                    }
+                    
+                    if (displayData.length === 0) {
+                        showToast("Tidak ada data jurnal untuk di-download", 'warning');
+                        loading.style.display = 'none';
+                        return;
+                    }
                 } else {
                     elementId = 'capture-rekap';
-                    filename = 'Rekap_Absensi';
-                    document.getElementById('sigDate2').textContent = fullDate;
+                    const selectedMonth = monthNames[parseInt(document.getElementById('recapMonthFilter').value)];
+                    const selectedYear = document.getElementById('recapYearFilter').value;
+                    filename = `Rekap_Absensi_${selectedMonth}_${selectedYear}`;
+                    
+                    // Cek apakah ada data sebelum generate PDF
+                    const month = parseInt(document.getElementById('recapMonthFilter').value);
+                    const year = parseInt(document.getElementById('recapYearFilter').value);
+                    const classFilter = document.getElementById('recapClassFilter').value;
+                    
+                    let hasData = false;
+                    journalHistory.forEach(journal => {
+                        const journalDate = new Date(journal.date + 'T00:00:00');
+                        if (journalDate.getMonth() === month && journalDate.getFullYear() === year) {
+                            if (classFilter === 'ALL' || journal.class === classFilter) {
+                                if (journal.absent.length > 0) {
+                                    hasData = true;
+                                }
+                            }
+                        }
+                    });
+                    
+                    if (!hasData) {
+                        showToast("Tidak ada data absensi untuk di-download", 'warning');
+                        loading.style.display = 'none';
+                        return;
+                    }
                 }
 
                 const element = document.getElementById(elementId);
+                
+                // Optimasi untuk mobile
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    element.classList.add('mobile-pdf');
+                }
 
-                html2canvas(element, {
-                    scale: 2,
-                    windowWidth: 1200, // FORCE DESKTOP VIEW
+                const canvas = await html2canvas(element, {
+                    scale: isMobile ? 1.5 : 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
+                    logging: false,
+                    width: element.scrollWidth,
+                    height: element.scrollHeight,
                     onclone: function(clonedDoc) {
-                        // Sembunyikan tombol & filter
-                        clonedDoc.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
-                        clonedDoc.querySelectorAll('.no-print-pdf').forEach(el => el.style.borderBottom = 'none');
-
-                        // Tampilkan Header & Tanda Tangan
-                        const printHeader = clonedDoc.querySelector('.print-header');
-                        if(printHeader) printHeader.style.display = 'block';
-
-                        // --- BAGIAN PENTING: MUNCULKAN TANDA TANGAN ---
-                        const sigSections = clonedDoc.querySelectorAll('.signature-section');
-                        sigSections.forEach(sig => sig.style.display = 'flex');
-
-                        // Fix Tabel Overflow
-                        const clonedElement = clonedDoc.getElementById(elementId);
-                        const tables = clonedElement.querySelectorAll('.table-responsive');
-                        tables.forEach(t => {
-                            t.style.overflow = 'visible';
-                            t.style.display = 'block';
-                            t.style.width = '100%';
+                        // Sembunyikan elemen yang tidak perlu
+                        clonedDoc.querySelectorAll('.no-print').forEach(el => {
+                            el.style.display = 'none';
+                            el.style.visibility = 'hidden';
                         });
-                        clonedElement.style.width = '1100px'; 
-                        clonedElement.style.padding = '20px';
+                        
+                        // Tampilkan header dan signature
+                        const clonedPrintHeader = clonedDoc.querySelector(`#${elementId} .print-header`);
+                        if(clonedPrintHeader) {
+                            clonedPrintHeader.style.display = 'block';
+                            clonedPrintHeader.style.visibility = 'visible';
+                        }
+                        
+                        // Pastikan signature section ditampilkan
+                        const clonedSigSections = clonedDoc.querySelectorAll(`#${elementId} .signature-section`);
+                        clonedSigSections.forEach(sig => {
+                            sig.style.display = 'flex';
+                            sig.style.visibility = 'visible';
+                        });
+                        
+                        // Optimasi tabel untuk PDF
+                        const tables = clonedDoc.querySelectorAll('table');
+                        tables.forEach(table => {
+                            table.style.width = '100%';
+                            table.style.tableLayout = 'fixed';
+                        });
+                        
+                        // Pastikan tidak ada elemen kosong yang memakan ruang
+                        const emptyStates = clonedDoc.querySelectorAll('.empty-state');
+                        emptyStates.forEach(el => {
+                            el.style.display = 'none';
+                            el.style.visibility = 'hidden';
+                        });
                     }
-                }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    
-                    const imgWidth = 210; 
-                    const pageHeight = 297; 
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    
-                    let heightLeft = imgHeight;
-                    let position = 0;
-
-                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    while (heightLeft > 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
-
-                    pdf.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
-                    loading.style.display = 'none';
-                    showToast("PDF Berhasil Didownload");
-                }).catch(err => {
-                    console.error(err);
-                    loading.style.display = 'none';
-                    alert("Gagal membuat PDF. Silakan coba lagi.");
                 });
-            }, 500); 
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                
+                // Hitung dimensi gambar
+                const imgWidth = pdfWidth - 20; // Margin 10mm kiri-kanan
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // Hitung jumlah halaman
+                let heightLeft = imgHeight;
+                let position = 10; // Margin atas 10mm
+                let pageNumber = 1;
+
+                while (heightLeft > 0) {
+                    pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                    position -= pdfHeight;
+                    
+                    // Tambah halaman baru jika masih ada konten
+                    if (heightLeft > 0) {
+                        pdf.addPage();
+                        pageNumber++;
+                    }
+                }
+
+                pdf.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
+                showToast("PDF Berhasil Didownload", 'success');
+
+                // Reset class mobile
+                if (isMobile) {
+                    element.classList.remove('mobile-pdf');
+                }
+
+            } catch (err) {
+                console.error('PDF Error:', err);
+                showToast("Gagal membuat PDF", 'error');
+            } finally {
+                loading.style.display = 'none';
+            }
         }
 
-        // --- BACKUP & RESTORE ---
+        function printSection(type) {
+            const city = schoolProfile.city || 'Kota';
+            const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const fullDate = `${city}, ${today}`;
+            
+            // Update tanggal signature sebelum print
+            document.getElementById('sigDate1').textContent = fullDate;
+            document.getElementById('sigDate2').textContent = fullDate;
+            
+            if (type === 'jurnal') {
+                // Cek apakah ada data sebelum print
+                const filterClass = document.getElementById('printClassFilter').value;
+                let displayData = journalHistory;
+                if(filterClass !== 'ALL') {
+                    displayData = journalHistory.filter(j => j.class === filterClass);
+                }
+                
+                if (displayData.length === 0) {
+                    showToast("Tidak ada data jurnal untuk di-print", 'warning');
+                    return;
+                }
+            } else {
+                // Cek apakah ada data sebelum print
+                const month = parseInt(document.getElementById('recapMonthFilter').value);
+                const year = parseInt(document.getElementById('recapYearFilter').value);
+                const classFilter = document.getElementById('recapClassFilter').value;
+                
+                let hasData = false;
+                journalHistory.forEach(journal => {
+                    const journalDate = new Date(journal.date + 'T00:00:00');
+                    if (journalDate.getMonth() === month && journalDate.getFullYear() === year) {
+                        if (classFilter === 'ALL' || journal.class === classFilter) {
+                            if (journal.absent.length > 0) {
+                                hasData = true;
+                            }
+                        }
+                    }
+                });
+                
+                if (!hasData) {
+                    showToast("Tidak ada data absensi untuk di-print", 'warning');
+                    return;
+                }
+            }
+            
+            // Sembunyikan elemen yang tidak perlu saat print
+            document.querySelectorAll('.no-print').forEach(el => {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            });
+            
+            // Pastikan signature section ditampilkan
+            document.querySelectorAll('.signature-section').forEach(sig => {
+                sig.style.display = 'flex';
+                sig.style.visibility = 'visible';
+            });
+            
+            setTimeout(() => {
+                window.print();
+                
+                // Kembalikan tampilan setelah print
+                setTimeout(() => {
+                    document.querySelectorAll('.no-print').forEach(el => {
+                        el.style.display = '';
+                        el.style.visibility = 'visible';
+                    });
+                }, 500);
+            }, 100);
+        }
+
         function exportBackup() {
             const dataToExport = {
-                profile: JSON.parse(localStorage.getItem('teacherProfile')),
+                teacherProfile: teacherProfile,
+                schoolProfile: schoolProfile,
                 journals: journalHistory,
-                date: new Date().toISOString()
+                students: students,
+                teacherPhoto: currentPhotoData,
+                exportDate: new Date().toISOString(),
+                version: '2.0'
             };
+            
             const dataStr = JSON.stringify(dataToExport, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1009,51 +2220,160 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast("Backup Didownload!");
+            URL.revokeObjectURL(url);
+            
+            showToast("Backup Berhasil Didownload!", 'success');
         }
 
         function importBackup(input) {
             const file = input.files[0];
             if (!file) return;
 
+            if(!confirm('Restore data dari backup? Data saat ini akan diganti.')) {
+                input.value = '';
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(data.profile) localStorage.setItem('teacherProfile', JSON.stringify(data.profile));
-                    if(data.journals) journalHistory = data.journals;
                     
-                    saveToLocalStorage();
-                    loadProfile();
-                    loadHistory();
-                    renderHistoryTable();
+                    if(!data.journals || !Array.isArray(data.journals)) {
+                        throw new Error('Format file backup tidak valid.');
+                    }
                     
-                    showToast("Data Berhasil Dipulihkan!");
+                    // Restore data
+                    teacherProfile = data.teacherProfile || data.profile || {};
+                    schoolProfile = data.schoolProfile || {};
+                    journalHistory = data.journals;
+                    if(data.students) students = data.students;
+                    if(data.teacherPhoto) currentPhotoData = data.teacherPhoto;
+                    
+                    // Save to localStorage
+                    localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
+                    localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
+                    localStorage.setItem('journals', JSON.stringify(journalHistory));
+                    if(currentPhotoData) {
+                        localStorage.setItem('teacherPhoto', currentPhotoData);
+                    }
+                    
+                    // Reload data
+                    initializeApp();
+                    
+                    showToast("Data Berhasil Dipulihkan!", 'success');
                 } catch (err) {
-                    alert("File backup tidak valid.");
+                    console.error('Restore Error:', err);
+                    showToast("File backup tidak valid.", 'error');
                 }
             };
             reader.readAsText(file);
+            input.value = '';
         }
 
-        // --- UTILS ---
+        function confirmClearData() {
+            if(confirm('HAPUS SEMUA DATA? Tindakan ini tidak dapat dibatalkan!')) {
+                localStorage.clear();
+                teacherProfile = {};
+                schoolProfile = {};
+                journalHistory = [];
+                currentPhotoData = null;
+                
+                // Reset form
+                document.getElementById('schoolName').value = '';
+                document.getElementById('schoolCity').value = '';
+                document.getElementById('principalName').value = '';
+                document.getElementById('principalNIP').value = '';
+                
+                // Reset photo
+                const photoPreview = document.getElementById('photoPreview');
+                const photoUploadText = document.getElementById('photoUploadText');
+                const photoControls = document.getElementById('photoControls');
+                photoPreview.style.display = 'none';
+                photoUploadText.style.display = 'block';
+                photoControls.style.display = 'none';
+                
+                // Reinitialize
+                initializeApp();
+                
+                showToast("Semua data berhasil dihapus", 'warning');
+            }
+        }
+
         function deleteJournal(id) {
             if(confirm('Hapus jurnal ini?')) {
                 journalHistory = journalHistory.filter(j => j.id !== id);
-                saveToLocalStorage();
+                localStorage.setItem('journals', JSON.stringify(journalHistory));
+                updateProfileDisplay();
                 renderHistoryTable();
-                showToast("Data Dihapus");
+                renderRecapTable();
+                showToast("Jurnal berhasil dihapus", 'warning');
             }
         }
 
         function formatDate(dateStr) {
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('id-ID', {
+                weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+            });
         }
 
-        function showToast(msg) {
+        function getDaysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function autoFillSampleData() {
+            // Fill teacher profile
+            teacherProfile = {
+                name: 'Budi Santoso, S.Pd., M.Pd.',
+                subject: 'Matematika',
+                classes: 'X,XI,XII'
+            };
+            localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
+            
+            // Fill school profile
+            document.getElementById('schoolName').value = 'SMK Negeri 1 Contoh';
+            document.getElementById('schoolCity').value = 'Surabaya';
+            document.getElementById('principalName').value = 'Dr. Surya Wijaya, M.Pd.';
+            document.getElementById('principalNIP').value = '197003211995011001';
+            
+            schoolProfile = {
+                school: 'SMK Negeri 1 Contoh',
+                city: 'Surabaya',
+                principal: 'Dr. Surya Wijaya, M.Pd.',
+                principalNIP: '197003211995011001'
+            };
+            localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
+            
+            // Add sample journals
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            const sampleJournals = [
+                { id: Date.now() + 1, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-05`, class: 'X', kd: 'Materi Aljabar Lanjut', absent: ['ADI SAPUTRA', 'AULIA NUR LAELA'] },
+                { id: Date.now() + 2, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-07`, class: 'XI', kd: 'Pengantar Kalkulus', absent: ['Ahmad Iqbal'] },
+                { id: Date.now() + 3, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-10`, class: 'XII', kd: 'Statistika Inferensial', absent: ['Ahmad Maulana', 'Aliya Ayu Marlina'] },
+            ];
+
+            journalHistory = [...journalHistory, ...sampleJournals];
+            journalHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem('journals', JSON.stringify(journalHistory));
+
+            updateProfileDisplay();
+            showToast("Data contoh telah diisi. Silakan simpan Data Sekolah.", 'info');
+        }
+
+        function showToast(msg, type = 'info') {
             const t = document.getElementById('toast');
             t.textContent = msg;
+            
+            switch(type) {
+                case 'success': t.style.background = '#22c55e'; break;
+                case 'error': t.style.background = '#ef4444'; break;
+                case 'warning': t.style.background = '#f59e0b'; break;
+                default: t.style.background = '#3b82f6';
+            }
+            
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }

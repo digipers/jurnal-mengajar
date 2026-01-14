@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* CSS tetap sama seperti sebelumnya */
+        /* CSS UTAMA - DIAMANKAN */
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
@@ -130,20 +130,55 @@
             flex: 1;
         }
 
+        /* PERBAIKAN UTAMA: CONTENT AREA HARUS BISA SCROLL */
         .content-area {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px;
+            height: calc(100vh - 70px); /* Tinggi viewport minus top bar */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
         }
 
         .section { 
             display: none; 
             animation: fadeIn 0.3s ease;
             max-width: 100%;
+            height: auto;
+            overflow: visible;
         }
         
         .section.active { 
             display: block; 
+            overflow: visible;
+            height: auto;
+        }
+
+        /* KHUSUS UNTUK SECTION CETAK JURNAL & REKAP ABSEN */
+        #cetak-jurnal, #rekap-absen {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 100%;
+        }
+
+        /* PERBAIKAN: KONTEN PRINT HARUS BISA SCROLL */
+        .print-content {
+            overflow: visible !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 5mm !important;
+            box-sizing: border-box !important;
+            background: white !important;
+            position: relative;
+        }
+
+        .pdf-optimized {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 5mm !important;
+            box-sizing: border-box !important;
+            background: white !important;
+            overflow: visible !important;
         }
 
         .card {
@@ -152,7 +187,15 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow: visible !important; /* PERUBAHAN PENTING */
+            width: 100%;
+        }
+
+        /* KHUSUS UNTUK CARD DI SECTION CETAK/REKAP */
+        #cetak-jurnal .card,
+        #rekap-absen .card {
+            overflow: visible !important;
+            min-height: auto;
         }
 
         .card-header {
@@ -267,12 +310,37 @@
             background: #f8fafc;
         }
 
+        /* PERBAIKAN SCROLL HORIZONTAL UNTUK TABEL */
         .table-responsive { 
             overflow-x: auto; 
+            overflow-y: visible;
             border-radius: 6px; 
             border: 1px solid var(--border);
             margin-bottom: 10px !important;
             max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
+            touch-action: pan-x pan-y; /* Enable both horizontal and vertical scroll */
+            position: relative;
+            width: 100%;
+        }
+        
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
         
         table { 
@@ -282,9 +350,10 @@
             min-width: 600px;
         }
         
+        /* TABEL REKAP HARUS BISA SCROLL HORIZONTAL DI HP */
         #recapTable { 
-            min-width: 1200px;
-            width: 100%;
+            min-width: auto !important;
+            width: auto !important;
         }
 
         th, td { 
@@ -329,23 +398,27 @@
             padding: 10px;
         }
 
+        /* SIGNATURE SECTION */
         .signature-section {
             margin-top: 20px !important;
             padding: 10px 0 !important;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             font-size: 1rem;
             color: #000;
             border-top: 2px solid #000;
             page-break-inside: avoid;
             width: 100%;
+            flex-wrap: nowrap;
         }
         
         .sig-block {
             text-align: center;
             min-width: 200px;
             flex: 1;
-            margin-top: 0 !important;
+            margin: 0;
+            padding: 0 10px;
         }
         
         .sig-space {
@@ -616,6 +689,7 @@
             display: none;
         }
 
+        /* PRINT STYLES */
         @media print {
             body * { 
                 visibility: hidden; 
@@ -639,14 +713,8 @@
                 box-sizing: border-box !important;
             }
             
-            .sidebar, .top-bar, .btn, .search-input, .suggestions, .tags-container, 
-            .filter-group, .menu-toggle, .no-print, .no-print-pdf, .photo-upload-area,
-            #pdfLoading, #toast, .overlay { 
+            .no-print { 
                 display: none !important; 
-                width: 0 !important;
-                height: 0 !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
             }
             
             body, .main-content, .content-area, .card, table, .signature-section {
@@ -677,6 +745,8 @@
                 margin-top: 10mm !important;
                 padding: 5mm 0 !important;
                 width: 100% !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
             }
             
             .sig-space {
@@ -729,35 +799,9 @@
                 display: none !important;
                 visibility: hidden !important;
             }
-            
-            table {
-                page-break-inside: auto;
-            }
-            
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
         }
 
-        .pdf-optimized {
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 5mm !important;
-            box-sizing: border-box !important;
-        }
-
-        .pdf-optimized table {
-            width: 100% !important;
-            table-layout: fixed !important;
-        }
-
-        .pdf-optimized .table-responsive {
-            width: 100% !important;
-            overflow: visible !important;
-            margin-bottom: 5mm !important;
-        }
-
+        /* STYLES KHUSUS UNTUK MOBILE */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; top: 0; }
             .sidebar.open { transform: translateX(260px); }
@@ -772,14 +816,67 @@
             .yellow-select { width: 100%; margin-bottom: 5px; }
             .btn-group { flex-direction: column; width: 100%; }
             .btn { width: 100%; margin-bottom: 5px; }
-            .content-area { padding: 15px; }
-            .signature-section { flex-direction: column; gap: 15px !important; }
+            .content-area { 
+                padding: 15px;
+                height: calc(100vh - 60px); /* Adjust for smaller top bar */
+            }
+            
+            /* PERBAIKAN UTAMA: SECTION CETAK/REKAP HARUS BISA SCROLL */
+            #cetak-jurnal, #rekap-absen {
+                min-height: 100%;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+            }
+            
+            /* CARD DI MOBILE HARUS BISA EXPAND */
+            #cetak-jurnal .card,
+            #rekap-absen .card {
+                min-height: auto;
+                overflow: visible !important;
+                padding: 15px;
+            }
+            
+            /* TABEL HARUS BISA SCROLL HORIZONTAL */
+            .table-responsive {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                touch-action: pan-x !important;
+                width: 100%;
+                position: relative;
+            }
+            
+            /* TABEL REKAP LEBIH LEBAR UNTUK SCROLL */
+            #recapTable {
+                min-width: 1000px !important;
+                width: auto !important;
+            }
+            
+            #recapTable th:nth-child(n+3),
+            #recapTable td:nth-child(n+3) {
+                width: 22px !important;
+                min-width: 22px !important;
+                max-width: 22px !important;
+                padding: 4px !important;
+            }
+            
+            /* Tanda tangan di mobile - tetap sejajar */
+            .signature-section {
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 15px !important;
+                margin-top: 20px !important;
+                width: 100% !important;
+            }
+            
+            .sig-block {
+                flex: 1 0 45% !important;
+                min-width: 45% !important;
+                margin: 0 !important;
+                padding: 0 5px !important;
+            }
+            
             .profile-stats { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
-            
-            .mobile-pdf {
-                zoom: 0.8;
-            }
         }
 
         @media (max-width: 480px) {
@@ -794,12 +891,35 @@
             .signature-section {
                 margin-top: 15px !important;
                 padding: 8px 0 !important;
+                gap: 10px !important;
+            }
+            
+            .sig-block {
+                flex: 1 0 45% !important;
+                min-width: 45% !important;
             }
             
             .sig-space {
-                height: 50px !important;
+                height: 40px !important;
                 margin: 8px 0 !important;
             }
+            
+            /* TABEL LEBIH KECIL DI HP KECIL */
+            #recapTable {
+                font-size: 8pt !important;
+                min-width: 900px !important;
+            }
+            
+            #recapTable th:nth-child(n+3),
+            #recapTable td:nth-child(n+3) {
+                width: 20px !important;
+                min-width: 20px !important;
+                max-width: 20px !important;
+                padding: 2px !important;
+            }
+            
+            .print-header h2 { font-size: 14pt !important; }
+            .print-header h3 { font-size: 11pt !important; }
         }
 
         @keyframes fadeIn { 
@@ -865,7 +985,7 @@
             <div style="font-size: 0.8rem; color: #64748b;" id="currentDateDisplay"></div>
         </header>
 
-        <div class="content-area">
+        <div class="content-area" id="mainContentArea">
             
             <!-- SECTION: PROFIL GURU -->
             <section id="profil-guru" class="section active">
@@ -1039,7 +1159,7 @@
                     </div>
 
                     <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
-                        <div class="card-header no-print-pdf" style="border-bottom: none;">
+                        <div class="card-header no-print" style="border-bottom: none;">
                             <span>Riwayat Jurnal</span>
                             <div class="filter-group no-print">
                                 <select id="printClassFilter" class="yellow-select">
@@ -1105,7 +1225,7 @@
                     </div>
 
                     <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
-                        <div class="card-header no-print-pdf" style="border-bottom: none;">
+                        <div class="card-header no-print" style="border-bottom: none;">
                             <span>Rekapitulasi</span>
                             <div class="filter-group no-print">
                                 <select id="recapMonthFilter" class="yellow-select month-year-filter"></select>
@@ -1484,8 +1604,16 @@
         }
 
         function showSection(sectionId, navElement) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // Sembunyikan semua section
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+                sec.style.overflow = 'visible';
+            });
+            
+            // Tampilkan section yang dipilih
             document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             navElement.classList.add('active');
             document.getElementById('pageTitle').textContent = navElement.innerText.replace(/[^\w\s&]/g, '').trim();
@@ -1496,11 +1624,17 @@
             if(sectionId === 'cetak-jurnal') {
                 renderHistoryTable();
                 updatePrintDates();
+                
+                // PERBAIKAN: Reset scroll ke atas
+                document.getElementById('mainContentArea').scrollTop = 0;
             }
             if(sectionId === 'rekap-absen') {
                 document.getElementById('rekapSchoolNameHeader').textContent = document.getElementById('schoolName').value || 'Nama Sekolah';
                 renderRecapTable();
                 updatePrintDates();
+                
+                // PERBAIKAN: Reset scroll ke atas
+                document.getElementById('mainContentArea').scrollTop = 0;
             }
         }
 
@@ -1887,6 +2021,7 @@
 
             const daysInMonth = getDaysInMonth(month, year);
 
+            // Hanya tampilkan tanggal 1-31 (full bulan)
             let headerRow = '<tr><th style="width: 40px;">No</th><th style="min-width: 150px;">Nama</th>';
             for (let i = 1; i <= daysInMonth; i++) {
                 headerRow += `<th>${i}</th>`;
@@ -2035,18 +2170,77 @@
 
                 const element = document.getElementById(elementId);
                 
-                // Optimasi untuk mobile
+                // Deteksi apakah HP berdasarkan viewport width (lebih reliable)
                 const isMobile = window.innerWidth <= 768;
+                
+                console.log("Generating PDF - Mobile:", isMobile, "Type:", type);
+                
+                // Simpan style asli
+                const originalStyles = {
+                    width: element.style.width,
+                    minWidth: element.style.minWidth,
+                    maxWidth: element.style.maxWidth,
+                    padding: element.style.padding,
+                    margin: element.style.margin
+                };
+                
+                // Untuk HP, atur width tetap untuk A4
                 if (isMobile) {
-                    element.classList.add('mobile-pdf');
+                    // Untuk tabel rekap, pastikan semua kolom terlihat
+                    if (type === 'rekap') {
+                        element.style.width = '1200px'; // Lebar lebih besar untuk semua hari
+                        element.style.minWidth = '1200px';
+                        element.style.maxWidth = '1200px';
+                        element.style.overflowX = 'visible';
+                    } else {
+                        element.style.width = '794px'; // 794px = 210mm A4 width
+                        element.style.minWidth = '794px';
+                        element.style.maxWidth = '794px';
+                    }
+                    
+                    element.style.padding = '20px';
+                    element.style.margin = '0 auto';
+                    element.style.boxSizing = 'border-box';
+                    
+                    // Pastikan signature section sejajar di HP
+                    const sigSections = element.querySelectorAll('.signature-section');
+                    sigSections.forEach(sig => {
+                        sig.style.display = 'flex';
+                        sig.style.flexDirection = 'row';
+                        sig.style.justifyContent = 'space-between';
+                        sig.style.alignItems = 'flex-start';
+                        sig.style.gap = '20px';
+                        sig.style.flexWrap = 'nowrap';
+                        sig.style.width = '100%';
+                        sig.style.marginTop = '30px';
+                        sig.style.padding = '15px 0';
+                    });
+                    
+                    // Atur sig-blocks agar sejajar
+                    const sigBlocks = element.querySelectorAll('.sig-block');
+                    sigBlocks.forEach(block => {
+                        block.style.flex = '1';
+                        block.style.minWidth = '45%';
+                        block.style.maxWidth = '45%';
+                        block.style.margin = '0';
+                        block.style.padding = '0 10px';
+                        block.style.textAlign = 'center';
+                    });
+                    
+                    // Pastikan tabel bisa menampung semua hari
+                    const tables = element.querySelectorAll('table');
+                    tables.forEach(table => {
+                        table.style.tableLayout = 'fixed';
+                        table.style.width = '100%';
+                    });
                 }
 
                 const canvas = await html2canvas(element, {
-                    scale: isMobile ? 1.5 : 2,
+                    scale: isMobile ? 1 : 2, // Scale 1 untuk HP agar semua kolom terlihat
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    width: element.scrollWidth,
+                    width: isMobile ? (type === 'rekap' ? 1200 : 794) : element.scrollWidth,
                     height: element.scrollHeight,
                     onclone: function(clonedDoc) {
                         // Sembunyikan elemen yang tidak perlu
@@ -2062,12 +2256,58 @@
                             clonedPrintHeader.style.visibility = 'visible';
                         }
                         
-                        // Pastikan signature section ditampilkan
-                        const clonedSigSections = clonedDoc.querySelectorAll(`#${elementId} .signature-section`);
-                        clonedSigSections.forEach(sig => {
-                            sig.style.display = 'flex';
-                            sig.style.visibility = 'visible';
-                        });
+                        // Untuk HP, optimalkan signature
+                        if (isMobile) {
+                            const clonedSigSections = clonedDoc.querySelectorAll(`#${elementId} .signature-section`);
+                            clonedSigSections.forEach(sig => {
+                                sig.style.display = 'flex';
+                                sig.style.flexDirection = 'row';
+                                sig.style.justifyContent = 'space-between';
+                                sig.style.alignItems = 'flex-start';
+                                sig.style.gap = '20px';
+                                sig.style.flexWrap = 'nowrap';
+                                sig.style.width = '100%';
+                                sig.style.visibility = 'visible';
+                                sig.style.marginTop = '30px';
+                                sig.style.padding = '15px 0';
+                                sig.style.borderTop = '2px solid #000';
+                            });
+                            
+                            const clonedSigBlocks = clonedDoc.querySelectorAll(`#${elementId} .sig-block`);
+                            clonedSigBlocks.forEach(block => {
+                                block.style.flex = '1';
+                                block.style.minWidth = '45%';
+                                block.style.maxWidth = '45%';
+                                block.style.margin = '0';
+                                block.style.padding = '0 10px';
+                                block.style.textAlign = 'center';
+                            });
+                            
+                            // Untuk tabel rekap, buat kolom lebih kecil
+                            if (type === 'rekap') {
+                                const clonedTable = clonedDoc.querySelector(`#${elementId} #recapTable`);
+                                if (clonedTable) {
+                                    clonedTable.style.fontSize = '7pt';
+                                    clonedTable.style.width = '100%';
+                                    
+                                    // Atur ukuran kolom tanggal
+                                    const allTh = clonedTable.querySelectorAll('th:nth-child(n+3):not(:last-child)');
+                                    const allTd = clonedTable.querySelectorAll('td:nth-child(n+3):not(:last-child)');
+                                    allTh.forEach(th => {
+                                        th.style.width = '15px';
+                                        th.style.minWidth = '15px';
+                                        th.style.maxWidth = '15px';
+                                        th.style.padding = '1px';
+                                    });
+                                    allTd.forEach(td => {
+                                        td.style.width = '15px';
+                                        td.style.minWidth = '15px';
+                                        td.style.maxWidth = '15px';
+                                        td.style.padding = '1px';
+                                    });
+                                }
+                            }
+                        }
                         
                         // Optimasi tabel untuk PDF
                         const tables = clonedDoc.querySelectorAll('table');
@@ -2116,14 +2356,44 @@
                 pdf.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
                 showToast("PDF Berhasil Didownload", 'success');
 
-                // Reset class mobile
+                // Reset style jika mobile
                 if (isMobile) {
-                    element.classList.remove('mobile-pdf');
+                    element.style.width = originalStyles.width;
+                    element.style.minWidth = originalStyles.minWidth;
+                    element.style.maxWidth = originalStyles.maxWidth;
+                    element.style.padding = originalStyles.padding;
+                    element.style.margin = originalStyles.margin;
+                    element.style.overflowX = '';
+                    
+                    // Reset signature styles
+                    const sigSections = element.querySelectorAll('.signature-section');
+                    sigSections.forEach(sig => {
+                        sig.style.display = '';
+                        sig.style.flexDirection = '';
+                        sig.style.justifyContent = '';
+                        sig.style.alignItems = '';
+                        sig.style.gap = '';
+                        sig.style.flexWrap = '';
+                        sig.style.width = '';
+                        sig.style.marginTop = '';
+                        sig.style.padding = '';
+                        sig.style.borderTop = '';
+                    });
+                    
+                    const sigBlocks = element.querySelectorAll('.sig-block');
+                    sigBlocks.forEach(block => {
+                        block.style.flex = '';
+                        block.style.minWidth = '';
+                        block.style.maxWidth = '';
+                        block.style.margin = '';
+                        block.style.padding = '';
+                        block.style.textAlign = '';
+                    });
                 }
 
             } catch (err) {
                 console.error('PDF Error:', err);
-                showToast("Gagal membuat PDF", 'error');
+                showToast("Gagal membuat PDF: " + err.message, 'error');
             } finally {
                 loading.style.display = 'none';
             }
@@ -2174,16 +2444,20 @@
                 }
             }
             
+            // Pastikan signature section sejajar sebelum print
+            document.querySelectorAll('.signature-section').forEach(sig => {
+                sig.style.display = 'flex';
+                sig.style.flexDirection = 'row';
+                sig.style.justifyContent = 'space-between';
+                sig.style.alignItems = 'flex-start';
+                sig.style.gap = '20px';
+                sig.style.flexWrap = 'nowrap';
+            });
+            
             // Sembunyikan elemen yang tidak perlu saat print
             document.querySelectorAll('.no-print').forEach(el => {
                 el.style.display = 'none';
                 el.style.visibility = 'hidden';
-            });
-            
-            // Pastikan signature section ditampilkan
-            document.querySelectorAll('.signature-section').forEach(sig => {
-                sig.style.display = 'flex';
-                sig.style.visibility = 'visible';
             });
             
             setTimeout(() => {
@@ -2194,6 +2468,16 @@
                     document.querySelectorAll('.no-print').forEach(el => {
                         el.style.display = '';
                         el.style.visibility = 'visible';
+                    });
+                    
+                    // Reset signature styles
+                    document.querySelectorAll('.signature-section').forEach(sig => {
+                        sig.style.display = '';
+                        sig.style.flexDirection = '';
+                        sig.style.justifyContent = '';
+                        sig.style.alignItems = '';
+                        sig.style.gap = '';
+                        sig.style.flexWrap = '';
                     });
                 }, 500);
             }, 100);

@@ -154,8 +154,8 @@
             height: auto;
         }
 
-        /* KHUSUS UNTUK SECTION CETAK JURNAL & REKAP ABSEN */
-        #cetak-jurnal, #rekap-absen {
+        /* KHUSUS UNTUK SECTION REKAP JURNAL & REKAP ABSEN */
+        #rekap-jurnal, #rekap-absen {
             overflow: visible !important;
             height: auto !important;
             min-height: 100%;
@@ -191,8 +191,8 @@
             width: 100%;
         }
 
-        /* KHUSUS UNTUK CARD DI SECTION CETAK/REKAP */
-        #cetak-jurnal .card,
+        /* KHUSUS UNTUK CARD DI SECTION REKAP/REKAP */
+        #rekap-jurnal .card,
         #rekap-absen .card {
             overflow: visible !important;
             min-height: auto;
@@ -689,6 +689,72 @@
             display: none;
         }
 
+        /* STYLE KHUSUS UNTUK JURNAL HARI INI - FORMAT TABEL */
+        .today-journal-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 5px solid var(--primary);
+            position: relative;
+        }
+
+        .today-journal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .today-date-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .today-empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .today-empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* STYLE UNTUK ABSENSI YANG LEBIH PADAT */
+        .absent-list {
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            padding: 5px;
+            background: #f8fafc;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .absent-list span {
+            display: block;
+            padding: 2px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .absent-list span:last-child {
+            border-bottom: none;
+        }
+
+        /* STYLE UNTUK STATUS HADIR SEMUA */
+        .all-present {
+            color: var(--success);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
         /* PRINT STYLES */
         @media print {
             body * { 
@@ -821,15 +887,15 @@
                 height: calc(100vh - 60px); /* Adjust for smaller top bar */
             }
             
-            /* PERBAIKAN UTAMA: SECTION CETAK/REKAP HARUS BISA SCROLL */
-            #cetak-jurnal, #rekap-absen {
+            /* PERBAIKAN UTAMA: SECTION REKAP/REKAP HARUS BISA SCROLL */
+            #rekap-jurnal, #rekap-absen {
                 min-height: 100%;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
             }
             
             /* CARD DI MOBILE HARUS BISA EXPAND */
-            #cetak-jurnal .card,
+            #rekap-jurnal .card,
             #rekap-absen .card {
                 min-height: auto;
                 overflow: visible !important;
@@ -857,6 +923,40 @@
                 min-width: 22px !important;
                 max-width: 22px !important;
                 padding: 4px !important;
+            }
+            
+            /* TABEL JURNAL HARI INI LEBIH KECIL DI MOBILE */
+            #todayJournalTable {
+                font-size: 0.85rem !important;
+                min-width: 700px !important;
+            }
+            
+            #todayJournalTable th:nth-child(1),
+            #todayJournalTable td:nth-child(1) {
+                width: 50px !important;
+                min-width: 50px !important;
+                max-width: 50px !important;
+            }
+            
+            #todayJournalTable th:nth-child(2),
+            #todayJournalTable td:nth-child(2) {
+                width: 120px !important;
+                min-width: 120px !important;
+                max-width: 120px !important;
+            }
+            
+            #todayJournalTable th:nth-child(3),
+            #todayJournalTable td:nth-child(3) {
+                width: 80px !important;
+                min-width: 80px !important;
+                max-width: 80px !important;
+            }
+            
+            #todayJournalTable th:nth-child(5),
+            #todayJournalTable td:nth-child(5) {
+                width: 100px !important;
+                min-width: 100px !important;
+                max-width: 100px !important;
             }
             
             /* Tanda tangan di mobile - tetap sejajar */
@@ -918,6 +1018,12 @@
                 padding: 2px !important;
             }
             
+            /* TABEL JURNAL HARI INI LEBIH KECIL */
+            #todayJournalTable {
+                font-size: 0.8rem !important;
+                min-width: 650px !important;
+            }
+            
             .print-header h2 { font-size: 14pt !important; }
             .print-header h3 { font-size: 11pt !important; }
         }
@@ -971,8 +1077,9 @@
             <li class="nav-item"><a class="nav-link" data-section-id="input-profil">⚙️ Data Sekolah</a></li>
             <div class="nav-divider"></div>
             <li class="nav-item"><a class="nav-link" data-section-id="input-jurnal">✏️ Input Jurnal</a></li>
-            <li class="nav-item"><a class="nav-link" data-section-id="cetak-jurnal">🖨️ Cetak Jurnal</a></li>
-            <li class="nav-item"><a class="nav-link" data-section-id="rekap-absen">📊 Rekap Absen</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="jurnal-hari-ini">📝 Jurnal Hari Ini</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="rekap-jurnal">📊 Rekap Jurnal</a></li>
+            <li class="nav-item"><a class="nav-link" data-section-id="rekap-absen">✅ Rekap Absen</a></li>
             <div class="nav-divider"></div>
             <li class="nav-item"><a class="nav-link" data-section-id="backup-restore">💾 Backup & Restore</a></li>
         </ul>
@@ -1148,8 +1255,47 @@
                 </div>
             </section>
 
-            <!-- SECTION: CETAK JURNAL -->
-            <section id="cetak-jurnal" class="section">
+            <!-- SECTION: JURNAL HARI INI (BARU) - FORMAT TABEL -->
+            <section id="jurnal-hari-ini" class="section">
+                <div class="card today-journal-card">
+                    <div class="today-journal-header">
+                        <span style="font-size: 1.2rem; font-weight: 700;">📝 Jurnal Hari Ini</span>
+                        <div class="today-date-badge" id="todayDateBadge"></div>
+                    </div>
+                    
+                    <div id="todayJournalContent">
+                        <!-- Tabel jurnal hari ini akan diisi oleh JavaScript -->
+                        <div class="table-responsive">
+                            <table id="todayJournalTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">No</th>
+                                        <th style="width: 150px;">Hari, Tanggal, Bulan, Tahun</th>
+                                        <th style="width: 80px;">Kelas</th>
+                                        <th>Materi / Kegiatan</th>
+                                        <th style="width: 100px;">Absen</th>
+                                        <th class="no-print" style="width: 70px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="todayJournalTbody">
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                            <div id="todayJournalEmpty" class="today-empty-state" style="display: none;">
+                                <div class="today-empty-state-icon">📝</div>
+                                <h3>Belum ada jurnal untuk hari ini</h3>
+                                <p>Mulai dengan mengisi jurnal mengajar di menu "Input Jurnal"</p>
+                                <button class="btn btn-primary" id="gotoInputJournalBtn" style="margin-top: 15px;">
+                                    ✏️ Isi Jurnal Hari Ini
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: REKAP JURNAL (DULU CETAK JURNAL) -->
+            <section id="rekap-jurnal" class="section">
                 <div id="capture-jurnal" class="print-content pdf-optimized">
                     <div class="print-header">
                         <h2 id="printSchoolName">Nama Sekolah</h2>
@@ -1412,17 +1558,30 @@
         let teacherProfile = {};
         let schoolProfile = {};
         let currentPhotoData = null;
+        let lastCheckedDate = ''; // Untuk mengecek perubahan tanggal
         
         const monthNames = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        const dayNames = [
+            'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('journalDate').value = today;
             
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', options);
+            const dateDisplay = new Date().toLocaleDateString('id-ID', options);
+            document.getElementById('currentDateDisplay').textContent = dateDisplay;
+            
+            // Set badge tanggal hari ini
+            document.getElementById('todayDateBadge').textContent = dateDisplay;
+            
+            // Set tanggal terakhir dicek
+            lastCheckedDate = today;
             
             initializeApp();
             addEventListeners();
@@ -1432,13 +1591,16 @@
                     document.getElementById('suggestions').style.display = 'none';
                 }
             });
+            
+            // Cek perubahan tanggal setiap menit
+            setInterval(checkDateChange, 60000); // Cek setiap 1 menit
         });
 
         function initializeApp() {
             // Load semua data
             loadAllData();
             
-            // Group siswa - INI FUNGSI YANG DIPERBAIKI
+            // Group siswa
             groupStudents();
             
             // Load history jurnal
@@ -1455,6 +1617,9 @@
             
             // Update tanggal cetak
             updatePrintDates();
+            
+            // Tampilkan jurnal hari ini
+            displayTodayJournal();
         }
 
         function loadAllData() {
@@ -1463,6 +1628,12 @@
             
             // Load school profile
             schoolProfile = JSON.parse(localStorage.getItem('schoolProfile') || '{}');
+            
+            // Load last checked date
+            const savedLastDate = localStorage.getItem('lastCheckedDate');
+            if (savedLastDate) {
+                lastCheckedDate = savedLastDate;
+            }
             
             // Isi form jika ada data
             if(schoolProfile) {
@@ -1572,9 +1743,116 @@
             document.getElementById('fileInput').addEventListener('change', function() {
                 importBackup(this);
             });
+            
+            // Tombol goto input jurnal
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.id === 'gotoInputJournalBtn') {
+                    const inputLink = document.querySelector('.nav-link[data-section-id="input-jurnal"]');
+                    if (inputLink) showSection('input-jurnal', inputLink);
+                }
+            });
         }
 
-        // --- FUNGSI UTAMA YANG DIPERBAIKI ---
+        // --- FUNGSI JURNAL HARI INI ---
+
+        function checkDateChange() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (today !== lastCheckedDate) {
+                // Tanggal berubah, update tampilan
+                lastCheckedDate = today;
+                localStorage.setItem('lastCheckedDate', today);
+                
+                // Update date display
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateDisplay = new Date().toLocaleDateString('id-ID', options);
+                document.getElementById('currentDateDisplay').textContent = dateDisplay;
+                document.getElementById('todayDateBadge').textContent = dateDisplay;
+                
+                // Update form tanggal
+                document.getElementById('journalDate').value = today;
+                
+                // Update tampilan jurnal hari ini
+                displayTodayJournal();
+                
+                // Tampilkan notifikasi jika sedang di menu Jurnal Hari Ini
+                if (document.getElementById('jurnal-hari-ini').classList.contains('active')) {
+                    showToast("Hari baru! Jurnal hari ini telah diperbarui.", 'info');
+                }
+            }
+        }
+
+        function formatDateLong(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            const dayName = dayNames[d.getDay()];
+            const day = d.getDate();
+            const month = monthNames[d.getMonth()];
+            const year = d.getFullYear();
+            
+            return `${dayName}, ${day} ${month} ${year}`;
+        }
+
+        function displayTodayJournal() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayJournals = journalHistory.filter(journal => journal.date === today);
+            const tbody = document.getElementById('todayJournalTbody');
+            const emptyState = document.getElementById('todayJournalEmpty');
+            
+            tbody.innerHTML = '';
+
+            if (todayJournals.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            todayJournals.forEach((journal, index) => {
+                const formattedDate = formatDateLong(journal.date);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${formattedDate}</td>
+                    <td><strong>${journal.class}</strong></td>
+                    <td>${journal.kd}</td>
+                    <td>
+                        ${journal.absent.length > 0 
+                            ? `<div class="absent-list">
+                                ${journal.absent.map(student => `<span>${student}</span>`).join('')}
+                               </div>
+                               <small style="color: var(--danger); font-weight: 600;">${journal.absent.length} siswa</small>`
+                            : '<span class="all-present">✓ Hadir Semua</span>'
+                        }
+                    </td>
+                    <td class="no-print">
+                        <button class="btn btn-danger" style="padding:4px 8px; font-size:0.7rem;" data-journal-id="${journal.id}">Hapus</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Tambahkan event listener untuk tombol hapus
+            tbody.querySelectorAll('.btn-danger[data-journal-id]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const journalId = parseInt(e.target.dataset.journalId);
+                    deleteTodayJournal(journalId);
+                });
+            });
+        }
+
+        function deleteTodayJournal(id) {
+            if(confirm('Hapus jurnal hari ini?')) {
+                journalHistory = journalHistory.filter(j => j.id !== id);
+                localStorage.setItem('journals', JSON.stringify(journalHistory));
+                updateProfileDisplay();
+                displayTodayJournal();
+                renderHistoryTable();
+                renderRecapTable();
+                showToast("Jurnal hari ini berhasil dihapus", 'warning');
+            }
+        }
 
         function groupStudents() {
             studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
@@ -1621,7 +1899,12 @@
             if(window.innerWidth <= 768) toggleSidebar();
             
             if(sectionId === 'profil-guru') updateProfileDisplay();
-            if(sectionId === 'cetak-jurnal') {
+            if(sectionId === 'jurnal-hari-ini') {
+                displayTodayJournal();
+                // PERBAIKAN: Reset scroll ke atas
+                document.getElementById('mainContentArea').scrollTop = 0;
+            }
+            if(sectionId === 'rekap-jurnal') {
                 renderHistoryTable();
                 updatePrintDates();
                 
@@ -1890,7 +2173,8 @@
         function clearJournalForm() {
             if(confirm('Reset form input jurnal?')) {
                 document.getElementById('journalForm').reset();
-                document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('journalDate').value = today;
                 selectedStudents = [];
                 renderTags();
                 handleClassChange();
@@ -1923,15 +2207,20 @@
             showToast("Jurnal Berhasil Disimpan!", 'success');
             
             document.getElementById('journalForm').reset();
-            document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('journalDate').value = today;
             selectedStudents = [];
             renderTags();
             handleClassChange();
             
+            // Update tampilan jurnal hari ini
+            displayTodayJournal();
+            
+            // Otomatis navigasi ke Jurnal Hari Ini
             setTimeout(() => {
-                const cetakLink = document.querySelector('.nav-link[data-section-id="cetak-jurnal"]');
-                if (cetakLink) showSection('cetak-jurnal', cetakLink);
-            }, 1000);
+                const todayLink = document.querySelector('.nav-link[data-section-id="jurnal-hari-ini"]');
+                if (todayLink) showSection('jurnal-hari-ini', todayLink);
+            }, 500);
         }
 
         function renderHistoryTable() {
@@ -2490,8 +2779,9 @@
                 journals: journalHistory,
                 students: students,
                 teacherPhoto: currentPhotoData,
+                lastCheckedDate: lastCheckedDate,
                 exportDate: new Date().toISOString(),
-                version: '2.0'
+                version: '4.0'
             };
             
             const dataStr = JSON.stringify(dataToExport, null, 2);
@@ -2533,11 +2823,13 @@
                     journalHistory = data.journals;
                     if(data.students) students = data.students;
                     if(data.teacherPhoto) currentPhotoData = data.teacherPhoto;
+                    if(data.lastCheckedDate) lastCheckedDate = data.lastCheckedDate;
                     
                     // Save to localStorage
                     localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
                     localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
                     localStorage.setItem('journals', JSON.stringify(journalHistory));
+                    localStorage.setItem('lastCheckedDate', lastCheckedDate);
                     if(currentPhotoData) {
                         localStorage.setItem('teacherPhoto', currentPhotoData);
                     }
@@ -2562,6 +2854,7 @@
                 schoolProfile = {};
                 journalHistory = [];
                 currentPhotoData = null;
+                lastCheckedDate = new Date().toISOString().split('T')[0];
                 
                 // Reset form
                 document.getElementById('schoolName').value = '';
@@ -2589,6 +2882,7 @@
                 journalHistory = journalHistory.filter(j => j.id !== id);
                 localStorage.setItem('journals', JSON.stringify(journalHistory));
                 updateProfileDisplay();
+                displayTodayJournal();
                 renderHistoryTable();
                 renderRecapTable();
                 showToast("Jurnal berhasil dihapus", 'warning');
@@ -2630,13 +2924,12 @@
             localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
             
             // Add sample journals
-            const currentMonth = new Date().getMonth();
-            const currentYear = new Date().getFullYear();
+            const today = new Date().toISOString().split('T')[0];
             
             const sampleJournals = [
-                { id: Date.now() + 1, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-05`, class: 'X', kd: 'Materi Aljabar Lanjut', absent: ['ADI SAPUTRA', 'AULIA NUR LAELA'] },
-                { id: Date.now() + 2, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-07`, class: 'XI', kd: 'Pengantar Kalkulus', absent: ['Ahmad Iqbal'] },
-                { id: Date.now() + 3, date: `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-10`, class: 'XII', kd: 'Statistika Inferensial', absent: ['Ahmad Maulana', 'Aliya Ayu Marlina'] },
+                { id: Date.now() + 1, date: today, class: 'X', kd: 'Materi Aljabar Lanjut', absent: ['ADI SAPUTRA', 'AULIA NUR LAELA'] },
+                { id: Date.now() + 2, date: today, class: 'XI', kd: 'Pengantar Kalkulus', absent: ['Ahmad Iqbal'] },
+                { id: Date.now() + 3, date: today, class: 'XII', kd: 'Statistika Inferensial', absent: ['Ahmad Maulana', 'Aliya Ayu Marlina'] },
             ];
 
             journalHistory = [...journalHistory, ...sampleJournals];
@@ -2644,6 +2937,7 @@
             localStorage.setItem('journals', JSON.stringify(journalHistory));
 
             updateProfileDisplay();
+            displayTodayJournal();
             showToast("Data contoh telah diisi. Silakan simpan Data Sekolah.", 'info');
         }
 

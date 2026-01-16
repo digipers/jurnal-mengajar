@@ -20,6 +20,8 @@
             --border: #e2e8f0;
             --danger: #ef4444;
             --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --filter-yellow: #fef08a;
             --filter-text: #854d0e;
@@ -372,13 +374,28 @@
         
         tr:hover { background-color: #f1f5f9; }
 
+        /* STYLE KHUSUS UNTUK KOLOM ABSEN DI REKAP */
+        .absent-cell {
+            text-align: center !important;
+            font-weight: bold;
+            min-width: 25px;
+            max-width: 25px;
+            padding: 5px 2px !important;
+        }
+        
+        .absent-A { color: var(--success); } /* Hadir */
+        .absent-T { color: #6b7280; } /* Tidak Hadir */
+        .absent-S { color: #f97316; } /* Sakit */
+        .absent-I { color: #3b82f6; } /* Ijin */
+        .absent-B { color: var(--danger); } /* Bolos */
+
         #recapTable th:nth-child(n+3),
         #recapTable td:nth-child(n+3) {
             text-align: center;
             width: 25px;
             min-width: 25px;
             max-width: 25px;
-            padding: 5px;
+            padding: 5px 2px;
         }
 
         #recapTable th:last-child,
@@ -396,7 +413,30 @@
         #recapTable tfoot td {
             border-top: 2px solid var(--primary);
             padding: 10px;
+            text-align: center;
         }
+
+        .total-boxes {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .total-box {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .total-A { background-color: #dcfce7; color: #166534; }
+        .total-T { background-color: #f3f4f6; color: #374151; }
+        .total-S { background-color: #ffedd5; color: #9a3412; }
+        .total-I { background-color: #dbeafe; color: #1e40af; }
+        .total-B { background-color: #fee2e2; color: #991b1b; }
 
         /* SIGNATURE SECTION */
         .signature-section {
@@ -453,6 +493,7 @@
         
         .suggestion-item:hover { background: #f1f5f9; }
         
+        /* STYLE UNTUK TAGS DENGAN ALASAN */
         .tags-container { 
             display: flex; 
             flex-wrap: wrap; 
@@ -465,8 +506,6 @@
         }
         
         .tag { 
-            background: #e0f2fe; 
-            color: #0369a1; 
             padding: 4px 10px; 
             border-radius: 20px; 
             font-size: 0.85rem; 
@@ -476,10 +515,13 @@
             gap: 6px; 
         }
         
+        .tag-T { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .tag-S { background: #ffedd5; color: #9a3412; border: 1px solid #fdba74; }
+        .tag-I { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .tag-B { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        
         .tag-remove { 
             cursor: pointer; 
-            background: #0ea5e9; 
-            color: white; 
             border-radius: 50%; 
             width: 16px; 
             height: 16px; 
@@ -487,7 +529,72 @@
             align-items: center; 
             justify-content: center; 
             font-size: 10px; 
+            font-weight: bold;
         }
+        
+        .tag-remove-T { background: #6b7280; color: white; }
+        .tag-remove-S { background: #f97316; color: white; }
+        .tag-remove-I { background: #3b82f6; color: white; }
+        .tag-remove-B { background: #ef4444; color: white; }
+
+        /* STYLE UNTUK SELECT ALASAN */
+        .reason-select-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .reason-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        
+        .reason-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .selected-student-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            border-left: 4px solid #9ca3af;
+            transition: all 0.2s;
+        }
+        
+        .selected-student-item.T { border-left-color: #9ca3af; }
+        .selected-student-item.S { border-left-color: #f97316; }
+        .selected-student-item.I { border-left-color: #3b82f6; }
+        .selected-student-item.B { border-left-color: #ef4444; }
+        
+        .student-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .reason-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .reason-T { background: #f3f4f6; color: #374151; }
+        .reason-S { background: #ffedd5; color: #9a3412; }
+        .reason-I { background: #dbeafe; color: #1e40af; }
+        .reason-B { background: #fee2e2; color: #991b1b; }
 
         #toast {
             position: fixed; 
@@ -737,15 +844,23 @@
             border-radius: 4px;
             margin-top: 5px;
         }
-
-        .absent-list span {
-            display: block;
-            padding: 2px 0;
+        
+        .absent-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
             border-bottom: 1px dashed #e2e8f0;
         }
-
-        .absent-list span:last-child {
+        
+        .absent-list-item:last-child {
             border-bottom: none;
+        }
+        
+        .absent-reason {
+            font-size: 0.75rem;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: 600;
         }
 
         /* STYLE UNTUK STATUS HADIR SEMUA */
@@ -854,6 +969,18 @@
                 min-width: 18px !important;
                 max-width: 18px !important;
                 padding: 1px 2px !important;
+                text-align: center !important;
+            }
+            
+            .absent-cell {
+                text-align: center !important;
+                padding: 1px !important;
+            }
+            
+            .total-boxes {
+                display: flex !important;
+                justify-content: space-around !important;
+                margin-top: 5mm !important;
             }
             
             @page {
@@ -867,7 +994,7 @@
             }
         }
 
-        /* STYLES KHUSUS UNTUK MOBILE */
+        /* PERBAIKAN SCROLL HORIZONTAL DI HP */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; top: 0; }
             .sidebar.open { transform: translateX(260px); }
@@ -977,6 +1104,22 @@
             
             .profile-stats { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
+            
+            /* Reason select group di mobile */
+            .reason-select-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .reason-select {
+                width: 100%;
+            }
+            
+            .selected-student-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1026,6 +1169,15 @@
             
             .print-header h2 { font-size: 14pt !important; }
             .print-header h3 { font-size: 11pt !important; }
+            
+            .total-boxes {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .total-box {
+                width: 100%;
+            }
         }
 
         @keyframes fadeIn { 
@@ -1217,7 +1369,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: INPUT JURNAL -->
+            <!-- SECTION: INPUT JURNAL (DENGAN ALASAN ABSEN OPSIONAL) -->
             <section id="input-jurnal" class="section">
                 <div class="card">
                     <div class="card-header">Catat Kegiatan Hari Ini</div>
@@ -1239,14 +1391,30 @@
                             <label for="journalKD">Kompetensi Dasar / Materi</label>
                             <textarea id="journalKD" rows="3" placeholder="Topik pembelajaran..." required></textarea>
                         </div>
+                        
+                        <!-- BAGIAN SISWA TIDAK HADIR DENGAN ALASAN OPSIONAL -->
                         <div class="form-group">
                             <label for="studentSearch">Siswa Tidak Hadir</label>
                             <div class="search-container">
                                 <input type="text" id="studentSearch" class="search-input" placeholder="Ketik nama siswa..." autocomplete="off" disabled>
                                 <div id="suggestions" class="suggestions" style="display:none;"></div>
                             </div>
-                            <div id="selectedTags" class="tags-container"></div>
+                            <div class="reason-select-group">
+                                <label>Pilih Alasan (Opsional):</label>
+                                <select id="absenceReason" class="reason-select">
+                                    <option value="T">Tidak Hadir</option>
+                                    <option value="S">Sakit (S)</option>
+                                    <option value="I">Ijin (I)</option>
+                                    <option value="B">Bolos (B)</option>
+                                </select>
+                                <small style="color: #64748b;">Default: "Tidak Hadir"</small>
+                            </div>
+                            <div id="selectedStudentsContainer" class="tags-container">
+                                <!-- Daftar siswa yang dipilih akan muncul di sini -->
+                                <div style="color: #64748b; font-style: italic;">Belum ada siswa yang dipilih</div>
+                            </div>
                         </div>
+                        
                         <div class="btn-group">
                             <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
                             <button type="button" class="btn btn-danger" id="clearJournalFormBtn">Reset Form</button>
@@ -1361,7 +1529,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: REKAP ABSEN -->
+            <!-- SECTION: REKAP ABSEN (DENGAN KODE A, T, S, I, B DAN TOTAL) -->
             <section id="rekap-absen" class="section">
                 <div id="capture-rekap" class="print-content pdf-optimized">
                     <div class="print-header">
@@ -1372,7 +1540,7 @@
 
                     <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
                         <div class="card-header no-print" style="border-bottom: none;">
-                            <span>Rekapitulasi</span>
+                            <span>Rekapitulasi Absensi</span>
                             <div class="filter-group no-print">
                                 <select id="recapMonthFilter" class="yellow-select month-year-filter"></select>
                                 <select id="recapYearFilter" class="yellow-select month-year-filter"></select>
@@ -1389,6 +1557,17 @@
                             </div>
                         </div>
 
+                        <!-- Keterangan Kode Absen -->
+                        <div style="margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 6px;">
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div><strong>A</strong> = Hadir</div>
+                                <div><strong>T</strong> = Tidak Hadir</div>
+                                <div><strong>S</strong> = Sakit</div>
+                                <div><strong>I</strong> = Ijin</div>
+                                <div><strong>B</strong> = Bolos/Alpa</div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table id="recapTable">
                                 <thead></thead>
@@ -1399,6 +1578,14 @@
                                 <div class="empty-state-icon">✅</div>
                                 <h3>Tidak ada data absensi</h3>
                                 <p>Pastikan Anda telah mengisi jurnal untuk bulan dan kelas yang dipilih.</p>
+                            </div>
+                        </div>
+
+                        <!-- Total Per Jenis Absen -->
+                        <div id="recapTotals" style="margin-top: 20px; display: none;">
+                            <h4 style="margin-bottom: 10px;">Total Absensi per Jenis:</h4>
+                            <div class="total-boxes" id="totalBoxesContainer">
+                                <!-- Total A, T, S, I, B akan diisi oleh JavaScript -->
                             </div>
                         </div>
 
@@ -1553,7 +1740,7 @@
 
         let studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
         let studentNISMap = {};
-        let selectedStudents = [];
+        let selectedStudents = []; // Array of objects: { name: '...', reason: 'T/S/I/B' }
         let journalHistory = [];
         let teacherProfile = {};
         let schoolProfile = {};
@@ -1568,6 +1755,15 @@
         const dayNames = [
             'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'
         ];
+
+        // Mapping kode absen ke keterangan
+        const absenceCodes = {
+            'A': { name: 'Hadir', color: 'success', bgColor: '#dcfce7', textColor: '#166534' },
+            'T': { name: 'Tidak Hadir', color: 'secondary', bgColor: '#f3f4f6', textColor: '#374151' },
+            'S': { name: 'Sakit', color: 'warning', bgColor: '#ffedd5', textColor: '#9a3412' },
+            'I': { name: 'Ijin', color: 'info', bgColor: '#dbeafe', textColor: '#1e40af' },
+            'B': { name: 'Bolos', color: 'danger', bgColor: '#fee2e2', textColor: '#991b1b' }
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
@@ -1751,6 +1947,14 @@
                     if (inputLink) showSection('input-jurnal', inputLink);
                 }
             });
+            
+            // Event untuk memilih siswa dari suggestion
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('suggestion-item')) {
+                    const studentName = e.target.querySelector('span').textContent;
+                    addStudent(studentName);
+                }
+            });
         }
 
         // --- FUNGSI JURNAL HARI INI ---
@@ -1811,6 +2015,20 @@
                 const formattedDate = formatDateLong(journal.date);
                 const row = document.createElement('tr');
                 
+                // Format daftar absen dengan alasan
+                let absentListHTML = '';
+                if (journal.absent && journal.absent.length > 0) {
+                    journal.absent.forEach(item => {
+                        const reasonText = absenceCodes[item.reason]?.name || item.reason;
+                        absentListHTML += `
+                            <div class="absent-list-item">
+                                <span>${item.name}</span>
+                                <span class="absent-reason reason-${item.reason}">${reasonText}</span>
+                            </div>
+                        `;
+                    });
+                }
+                
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${formattedDate}</td>
@@ -1819,7 +2037,7 @@
                     <td>
                         ${journal.absent.length > 0 
                             ? `<div class="absent-list">
-                                ${journal.absent.map(student => `<span>${student}</span>`).join('')}
+                                ${absentListHTML}
                                </div>
                                <small style="color: var(--danger); font-weight: 600;">${journal.absent.length} siswa</small>`
                             : '<span class="all-present">✓ Hadir Semua</span>'
@@ -2102,7 +2320,7 @@
 
         function handleClassChange() {
             selectedStudents = [];
-            renderTags();
+            renderSelectedStudents();
             document.getElementById('studentSearch').value = '';
             const cls = document.getElementById('journalClass').value;
             document.getElementById('studentSearch').disabled = !cls;
@@ -2119,7 +2337,8 @@
             }
 
             const matches = studentDatabase[cls].filter(s => 
-                s.nama.toLowerCase().includes(query.toLowerCase()) && !selectedStudents.includes(s.nama)
+                s.nama.toLowerCase().includes(query.toLowerCase()) && 
+                !selectedStudents.some(sel => sel.name === s.nama)
             );
 
             sugg.innerHTML = '';
@@ -2142,32 +2361,62 @@
         }
 
         function addStudent(name) {
-            if(!selectedStudents.includes(name)) {
-                selectedStudents.push(name);
-                selectedStudents.sort();
-                showToast(`${name} ditambahkan`, 'info');
+            // Cek apakah siswa sudah dipilih
+            if(selectedStudents.some(s => s.name === name)) {
+                showToast(`${name} sudah dipilih`, 'warning');
+                return;
             }
-            renderTags();
+            
+            const reason = document.getElementById('absenceReason').value;
+            selectedStudents.push({
+                name: name,
+                reason: reason
+            });
+            
+            renderSelectedStudents();
+            const reasonText = absenceCodes[reason]?.name || reason;
+            showToast(`${name} ditambahkan (${reasonText})`, 'info');
             document.getElementById('suggestions').style.display = 'none';
         }
 
         function removeStudent(name) {
-            selectedStudents = selectedStudents.filter(s => s !== name);
-            renderTags();
+            selectedStudents = selectedStudents.filter(s => s.name !== name);
+            renderSelectedStudents();
+            showToast(`${name} dihapus dari daftar`, 'warning');
         }
 
-        function renderTags() {
-            const container = document.getElementById('selectedTags');
+        function renderSelectedStudents() {
+            const container = document.getElementById('selectedStudentsContainer');
+            container.innerHTML = '';
+            
             if(selectedStudents.length === 0) {
                 container.innerHTML = '<div style="color: #64748b; font-style: italic;">Belum ada siswa yang dipilih</div>';
-            } else {
-                container.innerHTML = selectedStudents.map(s => `
-                    <div class="tag">${s} <span class="tag-remove" data-student-name="${s}">×</span></div>
-                `).join('');
-                container.querySelectorAll('.tag-remove').forEach(btn => {
-                    btn.addEventListener('click', (e) => removeStudent(e.target.dataset.studentName));
-                });
+                return;
             }
+            
+            selectedStudents.forEach(student => {
+                const reasonCode = student.reason;
+                const reasonInfo = absenceCodes[reasonCode];
+                
+                const studentDiv = document.createElement('div');
+                studentDiv.className = `selected-student-item ${reasonCode}`;
+                studentDiv.innerHTML = `
+                    <div class="student-name">${student.name}</div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="reason-badge reason-${reasonCode}">${reasonInfo.name} (${reasonCode})</span>
+                        <button class="tag-remove tag-remove-${reasonCode}" data-student-name="${student.name}">×</button>
+                    </div>
+                `;
+                container.appendChild(studentDiv);
+            });
+            
+            // Add event listeners for remove buttons
+            container.querySelectorAll('.tag-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const studentName = e.target.dataset.studentName;
+                    removeStudent(studentName);
+                });
+            });
         }
 
         function clearJournalForm() {
@@ -2176,7 +2425,7 @@
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('journalDate').value = today;
                 selectedStudents = [];
-                renderTags();
+                renderSelectedStudents();
                 handleClassChange();
                 showToast("Form berhasil direset", 'info');
             }
@@ -2197,7 +2446,7 @@
                 date: date,
                 class: kelas,
                 kd: kd,
-                absent: [...selectedStudents]
+                absent: [...selectedStudents] // Simpan array of objects dengan name dan reason
             };
             
             journalHistory.push(newEntry);
@@ -2210,7 +2459,7 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('journalDate').value = today;
             selectedStudents = [];
-            renderTags();
+            renderSelectedStudents();
             handleClassChange();
             
             // Update tampilan jurnal hari ini
@@ -2245,11 +2494,21 @@
             
             sortedData.forEach(j => {
                 const tr = document.createElement('tr');
+                
+                // Format daftar absen dengan alasan
+                let absentText = '';
+                if (j.absent && j.absent.length > 0) {
+                    absentText = j.absent.map(item => {
+                        const reasonText = absenceCodes[item.reason]?.name || item.reason;
+                        return `${item.name} (${reasonText})`;
+                    }).join(', ');
+                }
+                
                 tr.innerHTML = `
                     <td>${formatDate(j.date)}</td>
                     <td><strong>${j.class}</strong></td>
                     <td>${j.kd}</td>
-                    <td>${j.absent.length > 0 ? j.absent.join(', ') : '<span style="color:var(--success)">Hadir Semua</span>'}</td>
+                    <td>${j.absent.length > 0 ? absentText : '<span style="color:var(--success)">Hadir Semua</span>'}</td>
                     <td class="no-print">
                         <button class="btn btn-danger" style="padding:4px 8px; font-size:0.7rem;" data-journal-id="${j.id}">Hapus</button>
                     </td>
@@ -2300,17 +2559,20 @@
             const thead = document.querySelector('#recapTable thead');
             const tfoot = document.getElementById('recapFoot');
             const empty = document.getElementById('recapEmpty');
+            const totalsContainer = document.getElementById('recapTotals');
+            const totalBoxesContainer = document.getElementById('totalBoxesContainer');
             
             tbody.innerHTML = '';
             thead.innerHTML = '';
             tfoot.innerHTML = '';
+            totalBoxesContainer.innerHTML = '';
 
             document.getElementById('rekapMonthName').textContent = monthNames[month];
             document.getElementById('rekapYearPrint').textContent = year;
 
             const daysInMonth = getDaysInMonth(month, year);
 
-            // Hanya tampilkan tanggal 1-31 (full bulan)
+            // Buat header tabel dengan tanggal 1-31
             let headerRow = '<tr><th style="width: 40px;">No</th><th style="min-width: 150px;">Nama</th>';
             for (let i = 1; i <= daysInMonth; i++) {
                 headerRow += `<th>${i}</th>`;
@@ -2318,6 +2580,7 @@
             headerRow += '<th style="width: 80px;">Total</th></tr>';
             thead.innerHTML = headerRow;
 
+            // Filter siswa berdasarkan kelas
             let studentsInScope = [];
             if (classFilter === 'ALL') {
                 for (const cls in studentDatabase) {
@@ -2327,6 +2590,7 @@
                 studentsInScope = studentDatabase[classFilter] || [];
             }
             
+            // Urutkan siswa: pertama berdasarkan kelas, lalu nama
             studentsInScope.sort((a, b) => {
                 const classOrder = { 'X': 0, 'XI': 1, 'XII': 2 };
                 if (a.className !== b.className) {
@@ -2337,31 +2601,60 @@
 
             if (studentsInScope.length === 0) {
                 empty.style.display = 'block';
+                totalsContainer.style.display = 'none';
                 return;
             }
 
-            const absenceRecords = new Map(studentsInScope.map(s => [s.nama, { 
-                absences: new Array(daysInMonth).fill(false),
-                total: 0,
-                class: s.className,
-                nis: s.nis
-            }]));
+            // Inisialisasi data absensi
+            const absenceRecords = new Map();
+            const totalCounts = { A: 0, T: 0, S: 0, I: 0, B: 0 };
+            
+            studentsInScope.forEach(s => {
+                absenceRecords.set(s.nama, { 
+                    absences: new Array(daysInMonth).fill('A'), // Default: Hadir (A)
+                    total: { A: 0, T: 0, S: 0, I: 0, B: 0 },
+                    class: s.className,
+                    nis: s.nis
+                });
+            });
 
-            let totalClassAbsences = 0;
-
+            // Proses jurnal untuk bulan dan tahun yang dipilih
             journalHistory.forEach(journal => {
                 const journalDate = new Date(journal.date + 'T00:00:00');
                 if (journalDate.getMonth() === month && journalDate.getFullYear() === year) {
                     if (classFilter === 'ALL' || journal.class === classFilter) {
-                        const day = journalDate.getDate();
-                        journal.absent.forEach(absentStudentName => {
-                            if (absenceRecords.has(absentStudentName)) {
-                                const record = absenceRecords.get(absentStudentName);
+                        const day = journalDate.getDate() - 1; // Index 0-based
+                        
+                        // Reset semua siswa di hari itu ke 'A' (Hadir) terlebih dahulu
+                        studentsInScope.forEach(s => {
+                            if (classFilter === 'ALL' || s.className === journal.class) {
+                                const record = absenceRecords.get(s.nama);
+                                if (record) {
+                                    record.absences[day] = 'A';
+                                    record.total.A++;
+                                    totalCounts.A++;
+                                }
+                            }
+                        });
+                        
+                        // Isi absensi untuk siswa yang tidak hadir
+                        journal.absent.forEach(absentStudent => {
+                            if (absenceRecords.has(absentStudent.name)) {
+                                const record = absenceRecords.get(absentStudent.name);
                                 if (classFilter === 'ALL' || record.class === journal.class) {
-                                    if (!record.absences[day - 1]) {
-                                        record.absences[day - 1] = true;
-                                        record.total++;
-                                        totalClassAbsences++;
+                                    const reason = absentStudent.reason || 'T'; // Default: Tidak Hadir jika tidak ada reason
+                                    record.absences[day] = reason;
+                                    
+                                    // Update total untuk alasan yang dipilih
+                                    if (record.total[reason] !== undefined) {
+                                        record.total[reason]++;
+                                        totalCounts[reason]++;
+                                    }
+                                    
+                                    // Kurangi total A karena siswa tidak hadir
+                                    if (record.total.A > 0) {
+                                        record.total.A--;
+                                        totalCounts.A--;
                                     }
                                 }
                             }
@@ -2370,6 +2663,17 @@
                 }
             });
 
+            // Hitung total akhir untuk setiap siswa
+            absenceRecords.forEach(record => {
+                // Hitung ulang total A berdasarkan hari yang tidak memiliki absensi lain
+                let totalA = 0;
+                record.absences.forEach(status => {
+                    if (status === 'A') totalA++;
+                });
+                record.total.A = totalA;
+            });
+
+            // Render tabel
             let studentCounter = 0;
             studentsInScope.forEach(student => {
                 const record = absenceRecords.get(student.nama);
@@ -2377,24 +2681,62 @@
 
                 studentCounter++;
                 let rowHtml = `<tr><td>${studentCounter}</td><td>${student.nama}</td>`; 
+                
+                // Kolom tanggal (1-31)
                 for (let i = 0; i < daysInMonth; i++) {
-                    rowHtml += `<td>${record.absences[i] ? '✓' : ''}</td>`;
+                    const status = record.absences[i] || 'A';
+                    const statusClass = status === 'A' ? '' : `absent-${status}`;
+                    rowHtml += `<td class="absent-cell ${statusClass}">${status === 'A' ? '' : status}</td>`;
                 }
-                rowHtml += `<td>${record.total}</td></tr>`;
+                
+                // Kolom total (hanya total ketidakhadiran: T + S + I + B)
+                const totalNonA = record.total.T + record.total.S + record.total.I + record.total.B;
+                rowHtml += `<td><strong>${totalNonA}</strong></td></tr>`;
                 tbody.innerHTML += rowHtml;
             });
 
-            // Hanya tampilkan total jika ada data absensi
-            if (totalClassAbsences > 0) {
+            // Tampilkan total per jenis absen
+            if (totalCounts.A > 0 || totalCounts.T > 0 || totalCounts.S > 0 || totalCounts.I > 0 || totalCounts.B > 0) {
+                totalsContainer.style.display = 'block';
+                
+                // Buat kotak total untuk setiap jenis (kecuali A, cukup di tabel)
+                ['T', 'S', 'I', 'B'].forEach(code => {
+                    if (totalCounts[code] > 0) {
+                        const totalBox = document.createElement('div');
+                        totalBox.className = `total-box total-${code}`;
+                        totalBox.innerHTML = `
+                            <div style="font-size: 1.2rem; font-weight: bold;">${totalCounts[code]}</div>
+                            <div>${absenceCodes[code].name} (${code})</div>
+                        `;
+                        totalBoxesContainer.appendChild(totalBox);
+                    }
+                });
+                
+                // Tambahkan juga total hadir jika ada
+                if (totalCounts.A > 0) {
+                    const totalBox = document.createElement('div');
+                    totalBox.className = `total-box total-A`;
+                    totalBox.innerHTML = `
+                        <div style="font-size: 1.2rem; font-weight: bold;">${totalCounts.A}</div>
+                        <div>${absenceCodes['A'].name} (A)</div>
+                    `;
+                    totalBoxesContainer.appendChild(totalBox);
+                }
+                
+                // Tambahkan baris total di footer tabel
                 let totalFooterRow = `<tr><td colspan="2"><strong>Total Ketidakhadiran</strong></td>`;
                 for (let i = 1; i <= daysInMonth; i++) {
                     totalFooterRow += `<td></td>`;
                 }
-                totalFooterRow += `<td><strong>${totalClassAbsences}</strong></td></tr>`;
+                const totalAbsences = totalCounts.T + totalCounts.S + totalCounts.I + totalCounts.B;
+                totalFooterRow += `<td><strong>${totalAbsences}</strong></td></tr>`;
                 tfoot.innerHTML = totalFooterRow;
+                
+                empty.style.display = 'none';
+            } else {
+                empty.style.display = 'block';
+                totalsContainer.style.display = 'none';
             }
-
-            empty.style.display = totalClassAbsences === 0 ? 'block' : 'none';
         }
 
         async function generatePDF(type) {
@@ -2927,9 +3269,35 @@
             const today = new Date().toISOString().split('T')[0];
             
             const sampleJournals = [
-                { id: Date.now() + 1, date: today, class: 'X', kd: 'Materi Aljabar Lanjut', absent: ['ADI SAPUTRA', 'AULIA NUR LAELA'] },
-                { id: Date.now() + 2, date: today, class: 'XI', kd: 'Pengantar Kalkulus', absent: ['Ahmad Iqbal'] },
-                { id: Date.now() + 3, date: today, class: 'XII', kd: 'Statistika Inferensial', absent: ['Ahmad Maulana', 'Aliya Ayu Marlina'] },
+                { 
+                    id: Date.now() + 1, 
+                    date: today, 
+                    class: 'X', 
+                    kd: 'Materi Aljabar Lanjut', 
+                    absent: [
+                        { name: 'ADI SAPUTRA', reason: 'T' }, // Tidak Hadir (default)
+                        { name: 'AULIA NUR LAELA', reason: 'S' } // Sakit
+                    ] 
+                },
+                { 
+                    id: Date.now() + 2, 
+                    date: today, 
+                    class: 'XI', 
+                    kd: 'Pengantar Kalkulus', 
+                    absent: [
+                        { name: 'Ahmad Iqbal', reason: 'I' } // Ijin
+                    ] 
+                },
+                { 
+                    id: Date.now() + 3, 
+                    date: today, 
+                    class: 'XII', 
+                    kd: 'Statistika Inferensial', 
+                    absent: [
+                        { name: 'Ahmad Maulana', reason: 'B' }, // Bolos
+                        { name: 'Aliya Ayu Marlina', reason: 'T' } // Tidak Hadir (default)
+                    ] 
+                },
             ];
 
             journalHistory = [...journalHistory, ...sampleJournals];

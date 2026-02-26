@@ -132,14 +132,13 @@
             flex: 1;
         }
 
-        /* PERBAIKAN UTAMA: CONTENT AREA HARUS BISA SCROLL */
         .content-area {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 20px;
-            height: calc(100vh - 70px); /* Tinggi viewport minus top bar */
-            -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
+            height: calc(100vh - 70px);
+            -webkit-overflow-scrolling: touch;
         }
 
         .section { 
@@ -156,14 +155,12 @@
             height: auto;
         }
 
-        /* KHUSUS UNTUK SECTION REKAP JURNAL & REKAP ABSEN */
         #rekap-jurnal, #rekap-absen {
             overflow: visible !important;
             height: auto !important;
             min-height: 100%;
         }
 
-        /* PERBAIKAN: KONTEN PRINT HARUS BISA SCROLL */
         .print-content {
             overflow: visible !important;
             width: 100% !important;
@@ -189,11 +186,10 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
-            overflow: visible !important; /* PERUBAHAN PENTING */
+            overflow: visible !important;
             width: 100%;
         }
 
-        /* KHUSUS UNTUK CARD DI SECTION REKAP/REKAP */
         #rekap-jurnal .card,
         #rekap-absen .card {
             overflow: visible !important;
@@ -312,7 +308,6 @@
             background: #f8fafc;
         }
 
-        /* PERBAIKAN SCROLL HORIZONTAL UNTUK TABEL */
         .table-responsive { 
             overflow-x: auto; 
             overflow-y: visible;
@@ -320,8 +315,8 @@
             border: 1px solid var(--border);
             margin-bottom: 10px !important;
             max-width: 100%;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
-            touch-action: pan-x pan-y; /* Enable both horizontal and vertical scroll */
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x pan-y;
             position: relative;
             width: 100%;
         }
@@ -352,7 +347,6 @@
             min-width: 600px;
         }
         
-        /* TABEL REKAP HARUS BISA SCROLL HORIZONTAL DI HP */
         #recapTable { 
             min-width: auto !important;
             width: auto !important;
@@ -374,7 +368,6 @@
         
         tr:hover { background-color: #f1f5f9; }
 
-        /* STYLE KHUSUS UNTUK KOLOM ABSEN DI REKAP */
         .absent-cell {
             text-align: center !important;
             font-weight: bold;
@@ -383,11 +376,11 @@
             padding: 5px 2px !important;
         }
         
-        .absent-A { color: var(--success); } /* Hadir */
-        .absent-T { color: #6b7280; } /* Tidak Hadir */
-        .absent-S { color: #f97316; } /* Sakit */
-        .absent-I { color: #3b82f6; } /* Ijin */
-        .absent-B { color: var(--danger); } /* Bolos */
+        .absent-A { color: var(--success); }
+        .absent-T { color: #6b7280; }
+        .absent-S { color: #f97316; }
+        .absent-I { color: #3b82f6; }
+        .absent-B { color: var(--danger); }
 
         #recapTable th:nth-child(n+3),
         #recapTable td:nth-child(n+3) {
@@ -438,7 +431,6 @@
         .total-I { background-color: #dbeafe; color: #1e40af; }
         .total-B { background-color: #fee2e2; color: #991b1b; }
 
-        /* SIGNATURE SECTION */
         .signature-section {
             margin-top: 20px !important;
             padding: 10px 0 !important;
@@ -493,7 +485,6 @@
         
         .suggestion-item:hover { background: #f1f5f9; }
         
-        /* STYLE UNTUK TAGS DENGAN ALASAN */
         .tags-container { 
             display: flex; 
             flex-wrap: wrap; 
@@ -537,7 +528,6 @@
         .tag-remove-I { background: #3b82f6; color: white; }
         .tag-remove-B { background: #ef4444; color: white; }
 
-        /* STYLE UNTUK SELECT ALASAN */
         .reason-select-group {
             display: flex;
             align-items: center;
@@ -796,7 +786,6 @@
             display: none;
         }
 
-        /* STYLE KHUSUS UNTUK JURNAL HARI INI - FORMAT TABEL */
         .today-journal-card {
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
             border-left: 5px solid var(--primary);
@@ -834,7 +823,6 @@
             opacity: 0.5;
         }
 
-        /* STYLE UNTUK ABSENSI YANG LEBIH PADAT */
         .absent-list {
             max-height: 100px;
             overflow-y: auto;
@@ -863,11 +851,69 @@
             font-weight: 600;
         }
 
-        /* STYLE UNTUK STATUS HADIR SEMUA */
         .all-present {
             color: var(--success);
             font-weight: 600;
             font-size: 0.9rem;
+        }
+
+        /* Tambahan style untuk rekap keseluruhan */
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .all-recap-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-card-label {
+            font-size: 0.9rem;
+            color: #64748b;
         }
 
         /* PRINT STYLES */
@@ -994,7 +1040,6 @@
             }
         }
 
-        /* PERBAIKAN SCROLL HORIZONTAL DI HP */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; height: 100%; width: 280px; top: 0; }
             .sidebar.open { transform: translateX(260px); }
@@ -1011,17 +1056,15 @@
             .btn { width: 100%; margin-bottom: 5px; }
             .content-area { 
                 padding: 15px;
-                height: calc(100vh - 60px); /* Adjust for smaller top bar */
+                height: calc(100vh - 60px);
             }
             
-            /* PERBAIKAN UTAMA: SECTION REKAP/REKAP HARUS BISA SCROLL */
             #rekap-jurnal, #rekap-absen {
                 min-height: 100%;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
             }
             
-            /* CARD DI MOBILE HARUS BISA EXPAND */
             #rekap-jurnal .card,
             #rekap-absen .card {
                 min-height: auto;
@@ -1029,7 +1072,6 @@
                 padding: 15px;
             }
             
-            /* TABEL HARUS BISA SCROLL HORIZONTAL */
             .table-responsive {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important;
@@ -1038,7 +1080,6 @@
                 position: relative;
             }
             
-            /* TABEL REKAP LEBIH LEBAR UNTUK SCROLL */
             #recapTable {
                 min-width: 1000px !important;
                 width: auto !important;
@@ -1052,7 +1093,6 @@
                 padding: 4px !important;
             }
             
-            /* TABEL JURNAL HARI INI LEBIH KECIL DI MOBILE */
             #todayJournalTable {
                 font-size: 0.85rem !important;
                 min-width: 700px !important;
@@ -1086,7 +1126,6 @@
                 max-width: 100px !important;
             }
             
-            /* Tanda tangan di mobile - tetap sejajar */
             .signature-section {
                 flex-direction: row !important;
                 flex-wrap: wrap !important;
@@ -1105,7 +1144,6 @@
             .profile-stats { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
             
-            /* Reason select group di mobile */
             .reason-select-group {
                 flex-direction: column;
                 align-items: flex-start;
@@ -1119,6 +1157,14 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 5px;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
             }
         }
 
@@ -1147,7 +1193,6 @@
                 margin: 8px 0 !important;
             }
             
-            /* TABEL LEBIH KECIL DI HP KECIL */
             #recapTable {
                 font-size: 8pt !important;
                 min-width: 900px !important;
@@ -1161,7 +1206,6 @@
                 padding: 2px !important;
             }
             
-            /* TABEL JURNAL HARI INI LEBIH KECIL */
             #todayJournalTable {
                 font-size: 0.8rem !important;
                 min-width: 650px !important;
@@ -1369,7 +1413,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: INPUT JURNAL (DENGAN ALASAN ABSEN OPSIONAL) -->
+            <!-- SECTION: INPUT JURNAL -->
             <section id="input-jurnal" class="section">
                 <div class="card">
                     <div class="card-header">Catat Kegiatan Hari Ini</div>
@@ -1392,7 +1436,6 @@
                             <textarea id="journalKD" rows="3" placeholder="Topik pembelajaran..." required></textarea>
                         </div>
                         
-                        <!-- BAGIAN SISWA TIDAK HADIR DENGAN ALASAN OPSIONAL -->
                         <div class="form-group">
                             <label for="studentSearch">Siswa Tidak Hadir</label>
                             <div class="search-container">
@@ -1410,7 +1453,6 @@
                                 <small style="color: #64748b;">Default: "Tidak Hadir"</small>
                             </div>
                             <div id="selectedStudentsContainer" class="tags-container">
-                                <!-- Daftar siswa yang dipilih akan muncul di sini -->
                                 <div style="color: #64748b; font-style: italic;">Belum ada siswa yang dipilih</div>
                             </div>
                         </div>
@@ -1423,7 +1465,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: JURNAL HARI INI (BARU) - FORMAT TABEL -->
+            <!-- SECTION: JURNAL HARI INI -->
             <section id="jurnal-hari-ini" class="section">
                 <div class="card today-journal-card">
                     <div class="today-journal-header">
@@ -1432,7 +1474,6 @@
                     </div>
                     
                     <div id="todayJournalContent">
-                        <!-- Tabel jurnal hari ini akan diisi oleh JavaScript -->
                         <div class="table-responsive">
                             <table id="todayJournalTable">
                                 <thead>
@@ -1446,7 +1487,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="todayJournalTbody">
-                                    <!-- Data akan diisi oleh JavaScript -->
                                 </tbody>
                             </table>
                             <div id="todayJournalEmpty" class="today-empty-state" style="display: none;">
@@ -1462,7 +1502,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: REKAP JURNAL (DULU CETAK JURNAL) -->
+            <!-- SECTION: REKAP JURNAL -->
             <section id="rekap-jurnal" class="section">
                 <div id="capture-jurnal" class="print-content pdf-optimized">
                     <div class="print-header">
@@ -1529,35 +1569,115 @@
                 </div>
             </section>
 
-            <!-- SECTION: REKAP ABSEN (DENGAN KODE A, T, S, I, B DAN TOTAL) -->
+            <!-- SECTION: REKAP ABSEN DENGAN TAB BULANAN & KESELURUHAN -->
             <section id="rekap-absen" class="section">
-                <div id="capture-rekap" class="print-content pdf-optimized">
-                    <div class="print-header">
-                        <h2 id="rekapSchoolNameHeader">Nama Sekolah</h2>
-                        <h3>REKAPITULASI ABSENSI SISWA BULAN <span id="rekapMonthName"></span> TAHUN <span id="rekapYearPrint"></span></h3>
-                        <p style="margin-top: 5px; font-size: 10pt;">Tanggal Cetak: <span id="printDate2"></span></p>
+                <div class="card no-print">
+                    <div class="card-header">
+                        <span>Pilih Tampilan Rekap</span>
                     </div>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" id="tabMonthly">📅 Rekap Bulanan</button>
+                        <button class="tab-btn" id="tabAll">📊 Rekap Keseluruhan</button>
+                    </div>
+                </div>
 
-                    <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
-                        <div class="card-header no-print" style="border-bottom: none;">
-                            <span>Rekapitulasi Absensi</span>
+                <!-- TAB BULANAN -->
+                <div id="tabMonthlyContent" class="tab-content active">
+                    <div id="capture-rekap" class="print-content pdf-optimized">
+                        <div class="print-header">
+                            <h2 id="rekapSchoolNameHeader">Nama Sekolah</h2>
+                            <h3>REKAPITULASI ABSENSI SISWA BULAN <span id="rekapMonthName"></span> TAHUN <span id="rekapYearPrint"></span></h3>
+                            <p style="margin-top: 5px; font-size: 10pt;">Tanggal Cetak: <span id="printDate2"></span></p>
+                        </div>
+
+                        <div class="card" style="border: none; box-shadow: none; padding-bottom: 10px;">
+                            <div class="card-header no-print" style="border-bottom: none;">
+                                <span>Rekapitulasi Absensi Bulanan</span>
+                                <div class="filter-group no-print">
+                                    <select id="recapMonthFilter" class="yellow-select month-year-filter"></select>
+                                    <select id="recapYearFilter" class="yellow-select month-year-filter"></select>
+                                    <select id="recapClassFilter" class="yellow-select">
+                                        <option value="ALL">🏫 Semua Kelas</option>
+                                        <option value="X">📘 Kelas X</option>
+                                        <option value="XI">📗 Kelas XI</option>
+                                        <option value="XII">📕 Kelas XII</option>
+                                    </select>
+                                    <div class="btn-group">
+                                        <button class="btn btn-pdf" id="downloadRekapPdfBtn">📄 Download PDF</button>
+                                        <button class="btn btn-print" id="printRekapBtn">🖨️ Print</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 6px;">
+                                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                    <div><strong>A</strong> = Hadir</div>
+                                    <div><strong>T</strong> = Tidak Hadir</div>
+                                    <div><strong>S</strong> = Sakit</div>
+                                    <div><strong>I</strong> = Ijin</div>
+                                    <div><strong>B</strong> = Bolos/Alpa</div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table id="recapTable">
+                                    <thead></thead>
+                                    <tbody id="recapBody"></tbody>
+                                    <tfoot id="recapFoot"></tfoot>
+                                </table>
+                                <div id="recapEmpty" class="empty-state" style="display: none;">
+                                    <div class="empty-state-icon">✅</div>
+                                    <h3>Tidak ada data absensi</h3>
+                                    <p>Pastikan Anda telah mengisi jurnal untuk bulan dan kelas yang dipilih.</p>
+                                </div>
+                            </div>
+
+                            <div id="recapTotals" style="margin-top: 20px; display: none;">
+                                <h4 style="margin-bottom: 10px;">Total Absensi per Jenis:</h4>
+                                <div class="total-boxes" id="totalBoxesContainer">
+                                </div>
+                            </div>
+
+                            <div class="signature-section">
+                                <div class="sig-block">
+                                    <p>Mengetahui,</p>
+                                    <p>Kepala Sekolah</p>
+                                    <div class="sig-space"></div>
+                                    <p><b id="sigPrincipal2">Nama Kepala Sekolah</b></p>
+                                    <p>NIP. <span id="sigPrincipalNIP2">  </span></p>
+                                </div>
+                                <div class="sig-block">
+                                    <p id="sigDate2">Kota, Tanggal</p>
+                                    <p>Guru Mata Pelajaran</p>
+                                    <div class="sig-space"></div>
+                                    <p><b id="sigTeacher2">Nama Guru</b></p>
+                                    <p>NIP. <span id="sigTeacherNIP2">  </span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB KESELURUHAN -->
+                <div id="tabAllContent" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Rekapitulasi Absensi Keseluruhan</span>
                             <div class="filter-group no-print">
-                                <select id="recapMonthFilter" class="yellow-select month-year-filter"></select>
-                                <select id="recapYearFilter" class="yellow-select month-year-filter"></select>
-                                <select id="recapClassFilter" class="yellow-select">
+                                <select id="allRecapClassFilter" class="yellow-select">
                                     <option value="ALL">🏫 Semua Kelas</option>
                                     <option value="X">📘 Kelas X</option>
                                     <option value="XI">📗 Kelas XI</option>
                                     <option value="XII">📕 Kelas XII</option>
                                 </select>
-                                <div class="btn-group">
-                                    <button class="btn btn-pdf" id="downloadRekapPdfBtn">📄 Download PDF</button>
-                                    <button class="btn btn-print" id="printRekapBtn">🖨️ Print</button>
-                                </div>
+                                <button class="btn btn-pdf" id="downloadAllRekapPdfBtn">📄 Download PDF</button>
                             </div>
                         </div>
 
-                        <!-- Keterangan Kode Absen -->
+                        <div class="all-recap-stats" id="allRecapStats">
+                            <!-- Akan diisi JavaScript -->
+                        </div>
+
                         <div style="margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 6px;">
                             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                                 <div><strong>A</strong> = Hadir</div>
@@ -1569,40 +1689,27 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="recapTable">
-                                <thead></thead>
-                                <tbody id="recapBody"></tbody>
-                                <tfoot id="recapFoot"></tfoot>
+                            <table id="allRecapTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">No</th>
+                                        <th style="min-width: 150px;">Nama Siswa</th>
+                                        <th style="width: 80px;">Kelas</th>
+                                        <th style="width: 80px;">Total Hadir</th>
+                                        <th style="width: 80px;">Total T</th>
+                                        <th style="width: 80px;">Total S</th>
+                                        <th style="width: 80px;">Total I</th>
+                                        <th style="width: 80px;">Total B</th>
+                                        <th style="width: 100px;">Total Alpha</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allRecapBody"></tbody>
+                                <tfoot id="allRecapFoot"></tfoot>
                             </table>
-                            <div id="recapEmpty" class="empty-state" style="display: none;">
+                            <div id="allRecapEmpty" class="empty-state" style="display: none;">
                                 <div class="empty-state-icon">✅</div>
                                 <h3>Tidak ada data absensi</h3>
-                                <p>Pastikan Anda telah mengisi jurnal untuk bulan dan kelas yang dipilih.</p>
-                            </div>
-                        </div>
-
-                        <!-- Total Per Jenis Absen -->
-                        <div id="recapTotals" style="margin-top: 20px; display: none;">
-                            <h4 style="margin-bottom: 10px;">Total Absensi per Jenis:</h4>
-                            <div class="total-boxes" id="totalBoxesContainer">
-                                <!-- Total A, T, S, I, B akan diisi oleh JavaScript -->
-                            </div>
-                        </div>
-
-                        <div class="signature-section">
-                            <div class="sig-block">
-                                <p>Mengetahui,</p>
-                                <p>Kepala Sekolah</p>
-                                <div class="sig-space"></div>
-                                <p><b id="sigPrincipal2">Nama Kepala Sekolah</b></p>
-                                <p>NIP. <span id="sigPrincipalNIP2">  </span></p>
-                            </div>
-                            <div class="sig-block">
-                                <p id="sigDate2">Kota, Tanggal</p>
-                                <p>Guru Mata Pelajaran</p>
-                                <div class="sig-space"></div>
-                                <p><b id="sigTeacher2">Nama Guru</b></p>
-                                <p>NIP. <span id="sigTeacherNIP2">  </span></p>
+                                <p>Belum ada jurnal yang diisi.</p>
                             </div>
                         </div>
                     </div>
@@ -1740,12 +1847,12 @@
 
         let studentDatabase = { 'X': [], 'XI': [], 'XII': [] };
         let studentNISMap = {};
-        let selectedStudents = []; // Array of objects: { name: '...', reason: 'T/S/I/B' }
+        let selectedStudents = [];
         let journalHistory = [];
         let teacherProfile = {};
         let schoolProfile = {};
         let currentPhotoData = null;
-        let lastCheckedDate = ''; // Untuk mengecek perubahan tanggal
+        let lastCheckedDate = '';
         
         const monthNames = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -1756,7 +1863,6 @@
             'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'
         ];
 
-        // Mapping kode absen ke keterangan
         const absenceCodes = {
             'A': { name: 'Hadir', color: 'success', bgColor: '#dcfce7', textColor: '#166534' },
             'T': { name: 'Tidak Hadir', color: 'secondary', bgColor: '#f3f4f6', textColor: '#374151' },
@@ -1764,6 +1870,99 @@
             'I': { name: 'Ijin', color: 'info', bgColor: '#dbeafe', textColor: '#1e40af' },
             'B': { name: 'Bolos', color: 'danger', bgColor: '#fee2e2', textColor: '#991b1b' }
         };
+
+        // Fungsi untuk menyimpan data ke localStorage dan backup otomatis
+        function saveAllData() {
+            // Simpan ke localStorage
+            localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
+            localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
+            localStorage.setItem('journals', JSON.stringify(journalHistory));
+            localStorage.setItem('lastCheckedDate', lastCheckedDate);
+            if(currentPhotoData) {
+                localStorage.setItem('teacherPhoto', currentPhotoData);
+            }
+            
+            // Buat backup otomatis ke file (disimpan di IndexedDB)
+            createAutoBackup();
+        }
+
+        // Fungsi untuk membuat backup otomatis
+        function createAutoBackup() {
+            const dataToBackup = {
+                teacherProfile: teacherProfile,
+                schoolProfile: schoolProfile,
+                journals: journalHistory,
+                teacherPhoto: currentPhotoData,
+                lastCheckedDate: lastCheckedDate,
+                backupDate: new Date().toISOString(),
+                version: '4.0'
+            };
+            
+            // Simpan ke sessionStorage sebagai cadangan (tidak akan terhapus saat clear history biasa)
+            sessionStorage.setItem('autoBackup', JSON.stringify(dataToBackup));
+            
+            // Coba simpan ke IndexedDB jika browser mendukung
+            if (window.indexedDB) {
+                try {
+                    const request = indexedDB.open('JurnalGuruDB', 1);
+                    
+                    request.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains('backups')) {
+                            db.createObjectStore('backups', { keyPath: 'id' });
+                        }
+                    };
+                    
+                    request.onsuccess = function(event) {
+                        const db = event.target.result;
+                        const transaction = db.transaction(['backups'], 'readwrite');
+                        const store = transaction.objectStore('backups');
+                        store.put({ id: 'latestBackup', data: dataToBackup, timestamp: Date.now() });
+                    };
+                } catch (e) {
+                    console.log('IndexedDB tidak tersedia');
+                }
+            }
+        }
+
+        // Fungsi untuk memuat data dari semua sumber
+        function loadAllData() {
+            // Coba load dari localStorage dulu
+            teacherProfile = JSON.parse(localStorage.getItem('teacherProfile') || '{}');
+            schoolProfile = JSON.parse(localStorage.getItem('schoolProfile') || '{}');
+            journalHistory = JSON.parse(localStorage.getItem('journals') || '[]');
+            lastCheckedDate = localStorage.getItem('lastCheckedDate') || new Date().toISOString().split('T')[0];
+            currentPhotoData = localStorage.getItem('teacherPhoto') || null;
+            
+            // Jika data kosong, coba load dari sessionStorage (auto backup)
+            if (journalHistory.length === 0 && teacherProfile.name === undefined) {
+                const autoBackup = sessionStorage.getItem('autoBackup');
+                if (autoBackup) {
+                    try {
+                        const backup = JSON.parse(autoBackup);
+                        teacherProfile = backup.teacherProfile || {};
+                        schoolProfile = backup.schoolProfile || {};
+                        journalHistory = backup.journals || [];
+                        lastCheckedDate = backup.lastCheckedDate || new Date().toISOString().split('T')[0];
+                        currentPhotoData = backup.teacherPhoto || null;
+                        
+                        // Simpan kembali ke localStorage
+                        saveAllData();
+                        showToast('Data dipulihkan dari backup otomatis', 'info');
+                    } catch (e) {
+                        console.log('Gagal load auto backup');
+                    }
+                }
+            }
+            
+            // Isi form jika ada data
+            if(schoolProfile) {
+                document.getElementById('schoolName').value = schoolProfile.school || '';
+                document.getElementById('schoolCity').value = schoolProfile.city || '';
+                document.getElementById('principalName').value = schoolProfile.principal || '';
+                document.getElementById('principalNIP').value = schoolProfile.principalNIP || '';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
@@ -1773,10 +1972,8 @@
             const dateDisplay = new Date().toLocaleDateString('id-ID', options);
             document.getElementById('currentDateDisplay').textContent = dateDisplay;
             
-            // Set badge tanggal hari ini
             document.getElementById('todayDateBadge').textContent = dateDisplay;
             
-            // Set tanggal terakhir dicek
             lastCheckedDate = today;
             
             initializeApp();
@@ -1788,55 +1985,44 @@
                 }
             });
             
-            // Cek perubahan tanggal setiap menit
-            setInterval(checkDateChange, 60000); // Cek setiap 1 menit
+            setInterval(checkDateChange, 60000);
+            
+            // Event listener untuk tab
+            document.getElementById('tabMonthly').addEventListener('click', function() {
+                document.getElementById('tabMonthly').classList.add('active');
+                document.getElementById('tabAll').classList.remove('active');
+                document.getElementById('tabMonthlyContent').classList.add('active');
+                document.getElementById('tabAllContent').classList.remove('active');
+                renderRecapTable();
+            });
+            
+            document.getElementById('tabAll').addEventListener('click', function() {
+                document.getElementById('tabAll').classList.add('active');
+                document.getElementById('tabMonthly').classList.remove('active');
+                document.getElementById('tabAllContent').classList.add('active');
+                document.getElementById('tabMonthlyContent').classList.remove('active');
+                renderAllRecapTable();
+            });
+            
+            document.getElementById('allRecapClassFilter').addEventListener('change', renderAllRecapTable);
+            document.getElementById('downloadAllRekapPdfBtn').addEventListener('click', () => generateAllRecapPDF());
         });
 
         function initializeApp() {
-            // Load semua data
             loadAllData();
-            
-            // Group siswa
             groupStudents();
-            
-            // Load history jurnal
             loadHistory();
-            
-            // Update tampilan
             updateProfileDisplay();
-            
-            // Populate filter rekap
             populateRecapFilters();
-            
-            // Load foto profil jika ada
             loadProfilePhoto();
-            
-            // Update tanggal cetak
             updatePrintDates();
-            
-            // Tampilkan jurnal hari ini
             displayTodayJournal();
         }
 
-        function loadAllData() {
-            // Load teacher profile
-            teacherProfile = JSON.parse(localStorage.getItem('teacherProfile') || '{}');
-            
-            // Load school profile
-            schoolProfile = JSON.parse(localStorage.getItem('schoolProfile') || '{}');
-            
-            // Load last checked date
-            const savedLastDate = localStorage.getItem('lastCheckedDate');
-            if (savedLastDate) {
-                lastCheckedDate = savedLastDate;
-            }
-            
-            // Isi form jika ada data
-            if(schoolProfile) {
-                document.getElementById('schoolName').value = schoolProfile.school || '';
-                document.getElementById('schoolCity').value = schoolProfile.city || '';
-                document.getElementById('principalName').value = schoolProfile.principal || '';
-                document.getElementById('principalNIP').value = schoolProfile.principalNIP || '';
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('journals'));
+            if(history) {
+                journalHistory = history.sort((a, b) => new Date(a.date) - new Date(b.date));
             }
         }
 
@@ -1875,7 +2061,6 @@
         }
 
         function addEventListeners() {
-            // Navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function() {
                     showSection(this.dataset.sectionId, this);
@@ -1885,7 +2070,6 @@
             document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
             document.getElementById('overlay').addEventListener('click', toggleSidebar);
 
-            // Profile Guru Events
             document.getElementById('editProfileBtn').addEventListener('click', toggleProfileEdit);
             document.getElementById('cancelEditProfileBtn').addEventListener('click', toggleProfileEdit);
             document.getElementById('teacherProfileForm').addEventListener('submit', (e) => {
@@ -1893,14 +2077,12 @@
                 saveTeacherProfile();
             });
 
-            // School Profile & Photo
             document.getElementById('profileForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 saveSchoolProfile();
             });
             document.getElementById('autoFillSampleDataBtn').addEventListener('click', autoFillSampleData);
             
-            // Photo Upload
             document.getElementById('photoUploadArea').addEventListener('click', () => {
                 document.getElementById('photoInput').click();
             });
@@ -1908,7 +2090,6 @@
             document.getElementById('savePhotoBtn').addEventListener('click', saveProfilePhoto);
             document.getElementById('removePhotoBtn').addEventListener('click', removeProfilePhoto);
 
-            // Journal Form
             document.getElementById('journalClass').addEventListener('change', handleClassChange);
             document.getElementById('studentSearch').addEventListener('input', (e) => {
                 const query = e.target.value;
@@ -1921,7 +2102,6 @@
             });
             document.getElementById('clearJournalFormBtn').addEventListener('click', clearJournalForm);
 
-            // Print/PDF Events
             document.getElementById('printClassFilter').addEventListener('change', renderHistoryTable);
             document.getElementById('downloadJurnalPdfBtn').addEventListener('click', () => generatePDF('jurnal'));
             document.getElementById('printJurnalBtn').addEventListener('click', () => printSection('jurnal'));
@@ -1932,7 +2112,6 @@
             document.getElementById('downloadRekapPdfBtn').addEventListener('click', () => generatePDF('rekap'));
             document.getElementById('printRekapBtn').addEventListener('click', () => printSection('rekap'));
 
-            // Backup/Restore Events
             document.getElementById('exportBackupBtn').addEventListener('click', exportBackup);
             document.getElementById('confirmClearDataBtn').addEventListener('click', confirmClearData);
             document.getElementById('selectFileBtn').addEventListener('click', () => document.getElementById('fileInput').click());
@@ -1940,7 +2119,6 @@
                 importBackup(this);
             });
             
-            // Tombol goto input jurnal
             document.addEventListener('click', function(e) {
                 if (e.target && e.target.id === 'gotoInputJournalBtn') {
                     const inputLink = document.querySelector('.nav-link[data-section-id="input-jurnal"]');
@@ -1948,7 +2126,6 @@
                 }
             });
             
-            // Event untuk memilih siswa dari suggestion
             document.addEventListener('click', function(e) {
                 if (e.target && e.target.classList.contains('suggestion-item')) {
                     const studentName = e.target.querySelector('span').textContent;
@@ -1957,29 +2134,22 @@
             });
         }
 
-        // --- FUNGSI JURNAL HARI INI ---
-
         function checkDateChange() {
             const today = new Date().toISOString().split('T')[0];
             
             if (today !== lastCheckedDate) {
-                // Tanggal berubah, update tampilan
                 lastCheckedDate = today;
                 localStorage.setItem('lastCheckedDate', today);
                 
-                // Update date display
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const dateDisplay = new Date().toLocaleDateString('id-ID', options);
                 document.getElementById('currentDateDisplay').textContent = dateDisplay;
                 document.getElementById('todayDateBadge').textContent = dateDisplay;
                 
-                // Update form tanggal
                 document.getElementById('journalDate').value = today;
                 
-                // Update tampilan jurnal hari ini
                 displayTodayJournal();
                 
-                // Tampilkan notifikasi jika sedang di menu Jurnal Hari Ini
                 if (document.getElementById('jurnal-hari-ini').classList.contains('active')) {
                     showToast("Hari baru! Jurnal hari ini telah diperbarui.", 'info');
                 }
@@ -2015,7 +2185,6 @@
                 const formattedDate = formatDateLong(journal.date);
                 const row = document.createElement('tr');
                 
-                // Format daftar absen dengan alasan
                 let absentListHTML = '';
                 if (journal.absent && journal.absent.length > 0) {
                     journal.absent.forEach(item => {
@@ -2051,7 +2220,6 @@
                 tbody.appendChild(row);
             });
             
-            // Tambahkan event listener untuk tombol hapus
             tbody.querySelectorAll('.btn-danger[data-journal-id]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const journalId = parseInt(e.target.dataset.journalId);
@@ -2063,7 +2231,7 @@
         function deleteTodayJournal(id) {
             if(confirm('Hapus jurnal hari ini?')) {
                 journalHistory = journalHistory.filter(j => j.id !== id);
-                localStorage.setItem('journals', JSON.stringify(journalHistory));
+                saveAllData();
                 updateProfileDisplay();
                 displayTodayJournal();
                 renderHistoryTable();
@@ -2100,16 +2268,13 @@
         }
 
         function showSection(sectionId, navElement) {
-            // Sembunyikan semua section
             document.querySelectorAll('.section').forEach(sec => {
                 sec.classList.remove('active');
                 sec.style.overflow = 'visible';
             });
             
-            // Tampilkan section yang dipilih
             document.getElementById(sectionId).classList.add('active');
             
-            // Update navigation
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             navElement.classList.add('active');
             document.getElementById('pageTitle').textContent = navElement.innerText.replace(/[^\w\s&]/g, '').trim();
@@ -2119,22 +2284,17 @@
             if(sectionId === 'profil-guru') updateProfileDisplay();
             if(sectionId === 'jurnal-hari-ini') {
                 displayTodayJournal();
-                // PERBAIKAN: Reset scroll ke atas
                 document.getElementById('mainContentArea').scrollTop = 0;
             }
             if(sectionId === 'rekap-jurnal') {
                 renderHistoryTable();
                 updatePrintDates();
-                
-                // PERBAIKAN: Reset scroll ke atas
                 document.getElementById('mainContentArea').scrollTop = 0;
             }
             if(sectionId === 'rekap-absen') {
                 document.getElementById('rekapSchoolNameHeader').textContent = document.getElementById('schoolName').value || 'Nama Sekolah';
                 renderRecapTable();
                 updatePrintDates();
-                
-                // PERBAIKAN: Reset scroll ke atas
                 document.getElementById('mainContentArea').scrollTop = 0;
             }
         }
@@ -2154,11 +2314,9 @@
                 editMode.style.display = 'block';
                 editBtn.style.display = 'none';
                 
-                // Load existing data into form
                 document.getElementById('teacherFullName').value = teacherProfile.name || '';
                 document.getElementById('teacherSubject').value = teacherProfile.subject || '';
                 
-                // Set selected classes
                 const classSelect = document.getElementById('teacherClass');
                 if (teacherProfile.classes) {
                     const classesArray = teacherProfile.classes.split(',');
@@ -2184,23 +2342,20 @@
                 classes: selectedClasses
             };
             
-            localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
+            saveAllData();
             updateProfileDisplay();
             toggleProfileEdit();
             showToast("Profil Guru Berhasil Disimpan!", 'success');
         }
 
         function updateProfileDisplay() {
-            // Update profile card display
             document.getElementById('profileNameDisplay').textContent = teacherProfile.name || 'Nama Guru';
             document.getElementById('profileSubjectDisplay').textContent = teacherProfile.subject || 'Mata Pelajaran';
             document.getElementById('profileSchoolDisplay').textContent = schoolProfile.school || '-';
             
-            // Update kelas diajar
             const classesArray = teacherProfile.classes ? teacherProfile.classes.split(',') : [];
             document.getElementById('profileClassDisplay').textContent = classesArray.map(c => `Kelas ${c}`).join(', ') || '-';
             
-            // Update avatar with initials or photo
             const name = teacherProfile.name || '';
             if (currentPhotoData) {
                 document.getElementById('profileAvatarImg').style.display = 'block';
@@ -2212,16 +2367,13 @@
                 document.getElementById('profileAvatarInitials').textContent = initials.length > 0 && name ? initials : '👤';
             }
             
-            // Update statistics
             document.getElementById('statTotalJurnal').textContent = journalHistory.length;
             document.getElementById('statTotalSiswa').textContent = students.length;
             
-            // Update print headers
             document.getElementById('printTeacherName').textContent = teacherProfile.name || '-';
             document.getElementById('printSubject').textContent = teacherProfile.subject || '-';
             document.getElementById('printSchoolName').textContent = schoolProfile.school || 'Nama Sekolah';
             
-            // Update signature sections
             document.getElementById('sigTeacher1').textContent = teacherProfile.name || 'Nama Guru';
             document.getElementById('sigTeacher2').textContent = teacherProfile.name || 'Nama Guru';
             document.getElementById('sigPrincipal1').textContent = schoolProfile.principal || 'Nama Kepala Sekolah';
@@ -2229,7 +2381,6 @@
             document.getElementById('sigPrincipalNIP1').textContent = schoolProfile.principalNIP || '-';
             document.getElementById('sigPrincipalNIP2').textContent = schoolProfile.principalNIP || '-';
             
-            // Update tanggal cetak
             updatePrintDates();
         }
 
@@ -2237,13 +2388,11 @@
             const file = event.target.files[0];
             if (!file) return;
             
-            // Validasi ukuran file (maks 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 showToast("Ukuran file terlalu besar. Maksimal 2MB", 'error');
                 return;
             }
             
-            // Validasi tipe file
             if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
                 showToast("Format file tidak didukung. Gunakan JPG atau PNG", 'error');
                 return;
@@ -2267,7 +2416,7 @@
 
         function saveProfilePhoto() {
             if (currentPhotoData) {
-                localStorage.setItem('teacherPhoto', currentPhotoData);
+                saveAllData();
                 updateProfileDisplay();
                 showToast("Foto profil berhasil disimpan!", 'success');
             }
@@ -2293,6 +2442,7 @@
                 
                 document.getElementById('photoInput').value = '';
                 
+                saveAllData();
                 updateProfileDisplay();
                 showToast("Foto profil dihapus", 'warning');
             }
@@ -2306,16 +2456,9 @@
                 principalNIP: document.getElementById('principalNIP').value
             };
             
-            localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
+            saveAllData();
             updateProfileDisplay();
             showToast("Data Sekolah Berhasil Disimpan!", 'success');
-        }
-
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('journals'));
-            if(history) {
-                journalHistory = history.sort((a, b) => new Date(a.date) - new Date(b.date));
-            }
         }
 
         function handleClassChange() {
@@ -2361,7 +2504,6 @@
         }
 
         function addStudent(name) {
-            // Cek apakah siswa sudah dipilih
             if(selectedStudents.some(s => s.name === name)) {
                 showToast(`${name} sudah dipilih`, 'warning');
                 return;
@@ -2410,7 +2552,6 @@
                 container.appendChild(studentDiv);
             });
             
-            // Add event listeners for remove buttons
             container.querySelectorAll('.tag-remove').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const studentName = e.target.dataset.studentName;
@@ -2446,12 +2587,12 @@
                 date: date,
                 class: kelas,
                 kd: kd,
-                absent: [...selectedStudents] // Simpan array of objects dengan name dan reason
+                absent: [...selectedStudents]
             };
             
             journalHistory.push(newEntry);
             journalHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
-            localStorage.setItem('journals', JSON.stringify(journalHistory));
+            saveAllData();
             updateProfileDisplay();
             showToast("Jurnal Berhasil Disimpan!", 'success');
             
@@ -2462,10 +2603,8 @@
             renderSelectedStudents();
             handleClassChange();
             
-            // Update tampilan jurnal hari ini
             displayTodayJournal();
             
-            // Otomatis navigasi ke Jurnal Hari Ini
             setTimeout(() => {
                 const todayLink = document.querySelector('.nav-link[data-section-id="jurnal-hari-ini"]');
                 if (todayLink) showSection('jurnal-hari-ini', todayLink);
@@ -2495,7 +2634,6 @@
             sortedData.forEach(j => {
                 const tr = document.createElement('tr');
                 
-                // Format daftar absen dengan alasan
                 let absentText = '';
                 if (j.absent && j.absent.length > 0) {
                     absentText = j.absent.map(item => {
@@ -2572,7 +2710,6 @@
 
             const daysInMonth = getDaysInMonth(month, year);
 
-            // Buat header tabel dengan tanggal 1-31
             let headerRow = '<tr><th style="width: 40px;">No</th><th style="min-width: 150px;">Nama</th>';
             for (let i = 1; i <= daysInMonth; i++) {
                 headerRow += `<th>${i}</th>`;
@@ -2580,7 +2717,6 @@
             headerRow += '<th style="width: 80px;">Total</th></tr>';
             thead.innerHTML = headerRow;
 
-            // Filter siswa berdasarkan kelas
             let studentsInScope = [];
             if (classFilter === 'ALL') {
                 for (const cls in studentDatabase) {
@@ -2590,7 +2726,6 @@
                 studentsInScope = studentDatabase[classFilter] || [];
             }
             
-            // Urutkan siswa: pertama berdasarkan kelas, lalu nama
             studentsInScope.sort((a, b) => {
                 const classOrder = { 'X': 0, 'XI': 1, 'XII': 2 };
                 if (a.className !== b.className) {
@@ -2605,27 +2740,24 @@
                 return;
             }
 
-            // Inisialisasi data absensi
             const absenceRecords = new Map();
             const totalCounts = { A: 0, T: 0, S: 0, I: 0, B: 0 };
             
             studentsInScope.forEach(s => {
                 absenceRecords.set(s.nama, { 
-                    absences: new Array(daysInMonth).fill('A'), // Default: Hadir (A)
+                    absences: new Array(daysInMonth).fill('A'),
                     total: { A: 0, T: 0, S: 0, I: 0, B: 0 },
                     class: s.className,
                     nis: s.nis
                 });
             });
 
-            // Proses jurnal untuk bulan dan tahun yang dipilih
             journalHistory.forEach(journal => {
                 const journalDate = new Date(journal.date + 'T00:00:00');
                 if (journalDate.getMonth() === month && journalDate.getFullYear() === year) {
                     if (classFilter === 'ALL' || journal.class === classFilter) {
-                        const day = journalDate.getDate() - 1; // Index 0-based
+                        const day = journalDate.getDate() - 1;
                         
-                        // Reset semua siswa di hari itu ke 'A' (Hadir) terlebih dahulu
                         studentsInScope.forEach(s => {
                             if (classFilter === 'ALL' || s.className === journal.class) {
                                 const record = absenceRecords.get(s.nama);
@@ -2637,21 +2769,18 @@
                             }
                         });
                         
-                        // Isi absensi untuk siswa yang tidak hadir
                         journal.absent.forEach(absentStudent => {
                             if (absenceRecords.has(absentStudent.name)) {
                                 const record = absenceRecords.get(absentStudent.name);
                                 if (classFilter === 'ALL' || record.class === journal.class) {
-                                    const reason = absentStudent.reason || 'T'; // Default: Tidak Hadir jika tidak ada reason
+                                    const reason = absentStudent.reason || 'T';
                                     record.absences[day] = reason;
                                     
-                                    // Update total untuk alasan yang dipilih
                                     if (record.total[reason] !== undefined) {
                                         record.total[reason]++;
                                         totalCounts[reason]++;
                                     }
                                     
-                                    // Kurangi total A karena siswa tidak hadir
                                     if (record.total.A > 0) {
                                         record.total.A--;
                                         totalCounts.A--;
@@ -2663,9 +2792,7 @@
                 }
             });
 
-            // Hitung total akhir untuk setiap siswa
             absenceRecords.forEach(record => {
-                // Hitung ulang total A berdasarkan hari yang tidak memiliki absensi lain
                 let totalA = 0;
                 record.absences.forEach(status => {
                     if (status === 'A') totalA++;
@@ -2673,7 +2800,6 @@
                 record.total.A = totalA;
             });
 
-            // Render tabel
             let studentCounter = 0;
             studentsInScope.forEach(student => {
                 const record = absenceRecords.get(student.nama);
@@ -2682,25 +2808,21 @@
                 studentCounter++;
                 let rowHtml = `<tr><td>${studentCounter}</td><td>${student.nama}</td>`; 
                 
-                // Kolom tanggal (1-31)
                 for (let i = 0; i < daysInMonth; i++) {
                     const status = record.absences[i] || 'A';
                     const statusClass = status === 'A' ? '' : `absent-${status}`;
                     rowHtml += `<td class="absent-cell ${statusClass}">${status === 'A' ? '' : status}</td>`;
                 }
                 
-                // Kolom total (hanya total ketidakhadiran: T + S + I + B)
                 const totalNonA = record.total.T + record.total.S + record.total.I + record.total.B;
                 rowHtml += `<td><strong>${totalNonA}</strong></td></tr>`;
                 tbody.innerHTML += rowHtml;
             });
 
-            // Tampilkan total per jenis absen
             if (totalCounts.A > 0 || totalCounts.T > 0 || totalCounts.S > 0 || totalCounts.I > 0 || totalCounts.B > 0) {
                 totalsContainer.style.display = 'block';
                 
-                // Buat kotak total untuk setiap jenis (kecuali A, cukup di tabel)
-                ['T', 'S', 'I', 'B'].forEach(code => {
+                ['A', 'T', 'S', 'I', 'B'].forEach(code => {
                     if (totalCounts[code] > 0) {
                         const totalBox = document.createElement('div');
                         totalBox.className = `total-box total-${code}`;
@@ -2712,18 +2834,6 @@
                     }
                 });
                 
-                // Tambahkan juga total hadir jika ada
-                if (totalCounts.A > 0) {
-                    const totalBox = document.createElement('div');
-                    totalBox.className = `total-box total-A`;
-                    totalBox.innerHTML = `
-                        <div style="font-size: 1.2rem; font-weight: bold;">${totalCounts.A}</div>
-                        <div>${absenceCodes['A'].name} (A)</div>
-                    `;
-                    totalBoxesContainer.appendChild(totalBox);
-                }
-                
-                // Tambahkan baris total di footer tabel
                 let totalFooterRow = `<tr><td colspan="2"><strong>Total Ketidakhadiran</strong></td>`;
                 for (let i = 1; i <= daysInMonth; i++) {
                     totalFooterRow += `<td></td>`;
@@ -2739,6 +2849,155 @@
             }
         }
 
+        // Fungsi untuk rekap keseluruhan
+        function renderAllRecapTable() {
+            const classFilter = document.getElementById('allRecapClassFilter').value;
+            const tbody = document.getElementById('allRecapBody');
+            const tfoot = document.getElementById('allRecapFoot');
+            const empty = document.getElementById('allRecapEmpty');
+            const statsContainer = document.getElementById('allRecapStats');
+            
+            tbody.innerHTML = '';
+            tfoot.innerHTML = '';
+            statsContainer.innerHTML = '';
+
+            let studentsInScope = [];
+            if (classFilter === 'ALL') {
+                for (const cls in studentDatabase) {
+                    studentsInScope = studentsInScope.concat(studentDatabase[cls]);
+                }
+            } else {
+                studentsInScope = studentDatabase[classFilter] || [];
+            }
+            
+            studentsInScope.sort((a, b) => {
+                const classOrder = { 'X': 0, 'XI': 1, 'XII': 2 };
+                if (a.className !== b.className) {
+                    return classOrder[a.className] - classOrder[b.className];
+                }
+                return a.nama.localeCompare(b.nama);
+            });
+
+            if (studentsInScope.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+
+            const allRecords = new Map();
+            let grandTotal = { A: 0, T: 0, S: 0, I: 0, B: 0 };
+
+            studentsInScope.forEach(s => {
+                allRecords.set(s.nama, {
+                    name: s.nama,
+                    class: s.className,
+                    nis: s.nis,
+                    total: { A: 0, T: 0, S: 0, I: 0, B: 0 }
+                });
+            });
+
+            // Hitung total dari semua jurnal
+            journalHistory.forEach(journal => {
+                if (classFilter === 'ALL' || journal.class === classFilter) {
+                    const classStudents = studentsInScope.filter(s => s.className === journal.class);
+                    
+                    // Semua siswa di kelas ini dianggap hadir
+                    classStudents.forEach(student => {
+                        const record = allRecords.get(student.nama);
+                        if (record) {
+                            record.total.A++;
+                            grandTotal.A++;
+                        }
+                    });
+                    
+                    // Kurangi untuk yang tidak hadir
+                    journal.absent.forEach(absentStudent => {
+                        if (allRecords.has(absentStudent.name)) {
+                            const record = allRecords.get(absentStudent.name);
+                            const reason = absentStudent.reason || 'T';
+                            
+                            // Kurangi A (sudah ditambah sebelumnya)
+                            if (record.total.A > 0) {
+                                record.total.A--;
+                                grandTotal.A--;
+                            }
+                            
+                            // Tambah sesuai alasan
+                            record.total[reason]++;
+                            grandTotal[reason]++;
+                        }
+                    });
+                }
+            });
+
+            let studentCounter = 0;
+            allRecords.forEach((record, name) => {
+                studentCounter++;
+                const totalAlpha = record.total.T + record.total.S + record.total.I + record.total.B;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${studentCounter}</td>
+                    <td>${name}</td>
+                    <td>${record.class}</td>
+                    <td style="text-align: center; color: var(--success); font-weight: bold;">${record.total.A}</td>
+                    <td style="text-align: center;">${record.total.T}</td>
+                    <td style="text-align: center;">${record.total.S}</td>
+                    <td style="text-align: center;">${record.total.I}</td>
+                    <td style="text-align: center;">${record.total.B}</td>
+                    <td style="text-align: center; font-weight: bold; color: var(--danger);">${totalAlpha}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Tampilkan statistik ringkasan
+            const totalSiswa = studentsInScope.length;
+            const totalAlphaAll = grandTotal.T + grandTotal.S + grandTotal.I + grandTotal.B;
+            const rataAlpha = totalSiswa > 0 ? (totalAlphaAll / totalSiswa).toFixed(2) : 0;
+
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-card-value">${totalSiswa}</div>
+                    <div class="stat-card-label">Total Siswa</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${journalHistory.length}</div>
+                    <div class="stat-card-label">Total Jurnal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${grandTotal.A}</div>
+                    <div class="stat-card-label">Total Kehadiran</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${totalAlphaAll}</div>
+                    <div class="stat-card-label">Total Alpha</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${rataAlpha}</div>
+                    <div class="stat-card-label">Rata-rata Alpha/Siswa</div>
+                </div>
+            `;
+
+            // Footer total
+            const footerRow = document.createElement('tr');
+            footerRow.innerHTML = `
+                <td colspan="3"><strong>TOTAL</strong></td>
+                <td style="text-align: center; font-weight: bold;">${grandTotal.A}</td>
+                <td style="text-align: center; font-weight: bold;">${grandTotal.T}</td>
+                <td style="text-align: center; font-weight: bold;">${grandTotal.S}</td>
+                <td style="text-align: center; font-weight: bold;">${grandTotal.I}</td>
+                <td style="text-align: center; font-weight: bold;">${grandTotal.B}</td>
+                <td style="text-align: center; font-weight: bold; color: var(--danger);">${totalAlphaAll}</td>
+            `;
+            tfoot.appendChild(footerRow);
+
+            empty.style.display = 'none';
+        }
+
+        function generateAllRecapPDF() {
+            showToast("Fitur PDF untuk rekap keseluruhan akan segera hadir", 'info');
+            // Bisa dikembangkan lebih lanjut
+        }
+
         async function generatePDF(type) {
             const loading = document.getElementById('pdfLoading');
             loading.style.display = 'flex';
@@ -2749,7 +3008,6 @@
                 const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const fullDate = `${city}, ${today}`;
                 
-                // Update tanggal signature sebelum generate PDF
                 document.getElementById('sigDate1').textContent = fullDate;
                 document.getElementById('sigDate2').textContent = fullDate;
                 
@@ -2757,7 +3015,6 @@
                     elementId = 'capture-jurnal';
                     filename = 'Jurnal_Mengajar';
                     
-                    // Cek apakah ada data sebelum generate PDF
                     const filterClass = document.getElementById('printClassFilter').value;
                     let displayData = journalHistory;
                     if(filterClass !== 'ALL') {
@@ -2775,7 +3032,6 @@
                     const selectedYear = document.getElementById('recapYearFilter').value;
                     filename = `Rekap_Absensi_${selectedMonth}_${selectedYear}`;
                     
-                    // Cek apakah ada data sebelum generate PDF
                     const month = parseInt(document.getElementById('recapMonthFilter').value);
                     const year = parseInt(document.getElementById('recapYearFilter').value);
                     const classFilter = document.getElementById('recapClassFilter').value;
@@ -2801,12 +3057,8 @@
 
                 const element = document.getElementById(elementId);
                 
-                // Deteksi apakah HP berdasarkan viewport width (lebih reliable)
                 const isMobile = window.innerWidth <= 768;
                 
-                console.log("Generating PDF - Mobile:", isMobile, "Type:", type);
-                
-                // Simpan style asli
                 const originalStyles = {
                     width: element.style.width,
                     minWidth: element.style.minWidth,
@@ -2815,16 +3067,14 @@
                     margin: element.style.margin
                 };
                 
-                // Untuk HP, atur width tetap untuk A4
                 if (isMobile) {
-                    // Untuk tabel rekap, pastikan semua kolom terlihat
                     if (type === 'rekap') {
-                        element.style.width = '1200px'; // Lebar lebih besar untuk semua hari
+                        element.style.width = '1200px';
                         element.style.minWidth = '1200px';
                         element.style.maxWidth = '1200px';
                         element.style.overflowX = 'visible';
                     } else {
-                        element.style.width = '794px'; // 794px = 210mm A4 width
+                        element.style.width = '794px';
                         element.style.minWidth = '794px';
                         element.style.maxWidth = '794px';
                     }
@@ -2833,7 +3083,6 @@
                     element.style.margin = '0 auto';
                     element.style.boxSizing = 'border-box';
                     
-                    // Pastikan signature section sejajar di HP
                     const sigSections = element.querySelectorAll('.signature-section');
                     sigSections.forEach(sig => {
                         sig.style.display = 'flex';
@@ -2847,7 +3096,6 @@
                         sig.style.padding = '15px 0';
                     });
                     
-                    // Atur sig-blocks agar sejajar
                     const sigBlocks = element.querySelectorAll('.sig-block');
                     sigBlocks.forEach(block => {
                         block.style.flex = '1';
@@ -2858,7 +3106,6 @@
                         block.style.textAlign = 'center';
                     });
                     
-                    // Pastikan tabel bisa menampung semua hari
                     const tables = element.querySelectorAll('table');
                     tables.forEach(table => {
                         table.style.tableLayout = 'fixed';
@@ -2867,27 +3114,24 @@
                 }
 
                 const canvas = await html2canvas(element, {
-                    scale: isMobile ? 1 : 2, // Scale 1 untuk HP agar semua kolom terlihat
+                    scale: isMobile ? 1 : 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false,
                     width: isMobile ? (type === 'rekap' ? 1200 : 794) : element.scrollWidth,
                     height: element.scrollHeight,
                     onclone: function(clonedDoc) {
-                        // Sembunyikan elemen yang tidak perlu
                         clonedDoc.querySelectorAll('.no-print').forEach(el => {
                             el.style.display = 'none';
                             el.style.visibility = 'hidden';
                         });
                         
-                        // Tampilkan header dan signature
                         const clonedPrintHeader = clonedDoc.querySelector(`#${elementId} .print-header`);
                         if(clonedPrintHeader) {
                             clonedPrintHeader.style.display = 'block';
                             clonedPrintHeader.style.visibility = 'visible';
                         }
                         
-                        // Untuk HP, optimalkan signature
                         if (isMobile) {
                             const clonedSigSections = clonedDoc.querySelectorAll(`#${elementId} .signature-section`);
                             clonedSigSections.forEach(sig => {
@@ -2914,14 +3158,12 @@
                                 block.style.textAlign = 'center';
                             });
                             
-                            // Untuk tabel rekap, buat kolom lebih kecil
                             if (type === 'rekap') {
                                 const clonedTable = clonedDoc.querySelector(`#${elementId} #recapTable`);
                                 if (clonedTable) {
                                     clonedTable.style.fontSize = '7pt';
                                     clonedTable.style.width = '100%';
                                     
-                                    // Atur ukuran kolom tanggal
                                     const allTh = clonedTable.querySelectorAll('th:nth-child(n+3):not(:last-child)');
                                     const allTd = clonedTable.querySelectorAll('td:nth-child(n+3):not(:last-child)');
                                     allTh.forEach(th => {
@@ -2940,14 +3182,12 @@
                             }
                         }
                         
-                        // Optimasi tabel untuk PDF
                         const tables = clonedDoc.querySelectorAll('table');
                         tables.forEach(table => {
                             table.style.width = '100%';
                             table.style.tableLayout = 'fixed';
                         });
                         
-                        // Pastikan tidak ada elemen kosong yang memakan ruang
                         const emptyStates = clonedDoc.querySelectorAll('.empty-state');
                         emptyStates.forEach(el => {
                             el.style.display = 'none';
@@ -2963,13 +3203,11 @@
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
                 
-                // Hitung dimensi gambar
-                const imgWidth = pdfWidth - 20; // Margin 10mm kiri-kanan
+                const imgWidth = pdfWidth - 20;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
-                // Hitung jumlah halaman
                 let heightLeft = imgHeight;
-                let position = 10; // Margin atas 10mm
+                let position = 10;
                 let pageNumber = 1;
 
                 while (heightLeft > 0) {
@@ -2977,7 +3215,6 @@
                     heightLeft -= pdfHeight;
                     position -= pdfHeight;
                     
-                    // Tambah halaman baru jika masih ada konten
                     if (heightLeft > 0) {
                         pdf.addPage();
                         pageNumber++;
@@ -2987,7 +3224,6 @@
                 pdf.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
                 showToast("PDF Berhasil Didownload", 'success');
 
-                // Reset style jika mobile
                 if (isMobile) {
                     element.style.width = originalStyles.width;
                     element.style.minWidth = originalStyles.minWidth;
@@ -2996,7 +3232,6 @@
                     element.style.margin = originalStyles.margin;
                     element.style.overflowX = '';
                     
-                    // Reset signature styles
                     const sigSections = element.querySelectorAll('.signature-section');
                     sigSections.forEach(sig => {
                         sig.style.display = '';
@@ -3035,12 +3270,10 @@
             const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             const fullDate = `${city}, ${today}`;
             
-            // Update tanggal signature sebelum print
             document.getElementById('sigDate1').textContent = fullDate;
             document.getElementById('sigDate2').textContent = fullDate;
             
             if (type === 'jurnal') {
-                // Cek apakah ada data sebelum print
                 const filterClass = document.getElementById('printClassFilter').value;
                 let displayData = journalHistory;
                 if(filterClass !== 'ALL') {
@@ -3052,7 +3285,6 @@
                     return;
                 }
             } else {
-                // Cek apakah ada data sebelum print
                 const month = parseInt(document.getElementById('recapMonthFilter').value);
                 const year = parseInt(document.getElementById('recapYearFilter').value);
                 const classFilter = document.getElementById('recapClassFilter').value;
@@ -3075,7 +3307,6 @@
                 }
             }
             
-            // Pastikan signature section sejajar sebelum print
             document.querySelectorAll('.signature-section').forEach(sig => {
                 sig.style.display = 'flex';
                 sig.style.flexDirection = 'row';
@@ -3085,7 +3316,6 @@
                 sig.style.flexWrap = 'nowrap';
             });
             
-            // Sembunyikan elemen yang tidak perlu saat print
             document.querySelectorAll('.no-print').forEach(el => {
                 el.style.display = 'none';
                 el.style.visibility = 'hidden';
@@ -3094,14 +3324,12 @@
             setTimeout(() => {
                 window.print();
                 
-                // Kembalikan tampilan setelah print
                 setTimeout(() => {
                     document.querySelectorAll('.no-print').forEach(el => {
                         el.style.display = '';
                         el.style.visibility = 'visible';
                     });
                     
-                    // Reset signature styles
                     document.querySelectorAll('.signature-section').forEach(sig => {
                         sig.style.display = '';
                         sig.style.flexDirection = '';
@@ -3159,7 +3387,6 @@
                         throw new Error('Format file backup tidak valid.');
                     }
                     
-                    // Restore data
                     teacherProfile = data.teacherProfile || data.profile || {};
                     schoolProfile = data.schoolProfile || {};
                     journalHistory = data.journals;
@@ -3167,16 +3394,8 @@
                     if(data.teacherPhoto) currentPhotoData = data.teacherPhoto;
                     if(data.lastCheckedDate) lastCheckedDate = data.lastCheckedDate;
                     
-                    // Save to localStorage
-                    localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
-                    localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
-                    localStorage.setItem('journals', JSON.stringify(journalHistory));
-                    localStorage.setItem('lastCheckedDate', lastCheckedDate);
-                    if(currentPhotoData) {
-                        localStorage.setItem('teacherPhoto', currentPhotoData);
-                    }
+                    saveAllData();
                     
-                    // Reload data
                     initializeApp();
                     
                     showToast("Data Berhasil Dipulihkan!", 'success');
@@ -3191,20 +3410,31 @@
 
         function confirmClearData() {
             if(confirm('HAPUS SEMUA DATA? Tindakan ini tidak dapat dibatalkan!')) {
+                // Hapus dari localStorage
                 localStorage.clear();
+                
+                // Tapi simpan backup terakhir di sessionStorage
+                const lastBackup = {
+                    teacherProfile: teacherProfile,
+                    schoolProfile: schoolProfile,
+                    journals: journalHistory,
+                    teacherPhoto: currentPhotoData,
+                    lastCheckedDate: lastCheckedDate,
+                    backupDate: new Date().toISOString()
+                };
+                sessionStorage.setItem('lastBackupBeforeClear', JSON.stringify(lastBackup));
+                
                 teacherProfile = {};
                 schoolProfile = {};
                 journalHistory = [];
                 currentPhotoData = null;
                 lastCheckedDate = new Date().toISOString().split('T')[0];
                 
-                // Reset form
                 document.getElementById('schoolName').value = '';
                 document.getElementById('schoolCity').value = '';
                 document.getElementById('principalName').value = '';
                 document.getElementById('principalNIP').value = '';
                 
-                // Reset photo
                 const photoPreview = document.getElementById('photoPreview');
                 const photoUploadText = document.getElementById('photoUploadText');
                 const photoControls = document.getElementById('photoControls');
@@ -3212,17 +3442,16 @@
                 photoUploadText.style.display = 'block';
                 photoControls.style.display = 'none';
                 
-                // Reinitialize
                 initializeApp();
                 
-                showToast("Semua data berhasil dihapus", 'warning');
+                showToast("Semua data berhasil dihapus (backup tersimpan di session)", 'warning');
             }
         }
 
         function deleteJournal(id) {
             if(confirm('Hapus jurnal ini?')) {
                 journalHistory = journalHistory.filter(j => j.id !== id);
-                localStorage.setItem('journals', JSON.stringify(journalHistory));
+                saveAllData();
                 updateProfileDisplay();
                 displayTodayJournal();
                 renderHistoryTable();
@@ -3243,15 +3472,12 @@
         }
 
         function autoFillSampleData() {
-            // Fill teacher profile
             teacherProfile = {
                 name: 'Budi Santoso, S.Pd., M.Pd.',
                 subject: 'Matematika',
                 classes: 'X,XI,XII'
             };
-            localStorage.setItem('teacherProfile', JSON.stringify(teacherProfile));
             
-            // Fill school profile
             document.getElementById('schoolName').value = 'SMK Negeri 1 Contoh';
             document.getElementById('schoolCity').value = 'Surabaya';
             document.getElementById('principalName').value = 'Dr. Surya Wijaya, M.Pd.';
@@ -3263,9 +3489,7 @@
                 principal: 'Dr. Surya Wijaya, M.Pd.',
                 principalNIP: '197003211995011001'
             };
-            localStorage.setItem('schoolProfile', JSON.stringify(schoolProfile));
             
-            // Add sample journals
             const today = new Date().toISOString().split('T')[0];
             
             const sampleJournals = [
@@ -3275,8 +3499,8 @@
                     class: 'X', 
                     kd: 'Materi Aljabar Lanjut', 
                     absent: [
-                        { name: 'ADI SAPUTRA', reason: 'T' }, // Tidak Hadir (default)
-                        { name: 'AULIA NUR LAELA', reason: 'S' } // Sakit
+                        { name: 'ADI SAPUTRA', reason: 'T' },
+                        { name: 'AULIA NUR LAELA', reason: 'S' }
                     ] 
                 },
                 { 
@@ -3285,7 +3509,7 @@
                     class: 'XI', 
                     kd: 'Pengantar Kalkulus', 
                     absent: [
-                        { name: 'Ahmad Iqbal', reason: 'I' } // Ijin
+                        { name: 'Ahmad Iqbal', reason: 'I' }
                     ] 
                 },
                 { 
@@ -3294,16 +3518,15 @@
                     class: 'XII', 
                     kd: 'Statistika Inferensial', 
                     absent: [
-                        { name: 'Ahmad Maulana', reason: 'B' }, // Bolos
-                        { name: 'Aliya Ayu Marlina', reason: 'T' } // Tidak Hadir (default)
+                        { name: 'Ahmad Maulana', reason: 'B' },
+                        { name: 'Aliya Ayu Marlina', reason: 'T' }
                     ] 
                 },
             ];
 
             journalHistory = [...journalHistory, ...sampleJournals];
             journalHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
-            localStorage.setItem('journals', JSON.stringify(journalHistory));
-
+            saveAllData();
             updateProfileDisplay();
             displayTodayJournal();
             showToast("Data contoh telah diisi. Silakan simpan Data Sekolah.", 'info');
